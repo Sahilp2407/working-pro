@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BookOpen, Cpu, LogOut, Terminal, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ThemeToggle from '../components/ThemeToggle';
+import LogoTicker from '../components/LogoTicker';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -75,31 +77,34 @@ export default function Dashboard() {
                 <div style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em' }}>
                     AI WORKSHOP
                 </div>
-                <button
-                    onClick={handleLogout}
-                    style={{
-                        background: 'transparent',
-                        border: '1px solid var(--border-color)',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '8px',
-                        color: 'var(--text-secondary)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.color = 'var(--text-primary)';
-                        e.currentTarget.style.borderColor = 'var(--text-primary)';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.color = 'var(--text-secondary)';
-                        e.currentTarget.style.borderColor = 'var(--border-color)';
-                    }}
-                >
-                    <LogOut size={16} /> Logout
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <ThemeToggle />
+                    <button
+                        onClick={handleLogout}
+                        style={{
+                            background: 'transparent',
+                            border: '1px solid var(--border-color)',
+                            padding: '0.5rem 1rem',
+                            borderRadius: '8px',
+                            color: 'var(--text-secondary)',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.color = 'var(--text-primary)';
+                            e.currentTarget.style.borderColor = 'var(--text-primary)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.color = 'var(--text-secondary)';
+                            e.currentTarget.style.borderColor = 'var(--border-color)';
+                        }}
+                    >
+                        <LogOut size={16} /> Logout
+                    </button>
+                </div>
             </nav>
 
             <motion.div
@@ -158,18 +163,13 @@ export default function Dashboard() {
                         />
                     </motion.div>
 
-                    <motion.div variants={itemVariants}>
-                        <WorkshopCard
-                            number="03"
-                            title="Coming Soon"
-                            description="Advanced agentic workflows and multi-modal systems."
-                            icon={<Terminal size={24} />}
-                            color="#22c55e"
-                            locked
-                        />
-                    </motion.div>
+
                 </div>
             </motion.div>
+
+            <div style={{ marginTop: 'auto', paddingBottom: '0' }}>
+                <LogoTicker />
+            </div>
         </div>
     );
 }

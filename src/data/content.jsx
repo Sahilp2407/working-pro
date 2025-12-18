@@ -101,7 +101,7 @@ Output:
                 <p>System inspired by the human brain (Input Layer → Hidden Layers → Output Layer).</p>
                 <LinkBlock
                     title="Neural Network Pipeline"
-                    url="https://simulation-gen-ai.vercel.app/ml-explainer"
+                    url="https://ml-neural-networks.vercel.app/neural-networks-explainer/"
                     color="#ef4444" // red
                 />
 
@@ -165,6 +165,11 @@ Tokens: [AI] [helps] [people] [work] [faster]`} />
                         </ul>
                     </div>
                 </div>
+                <LinkBlock
+                    title="LLMs Are Good At vs Not Good At"
+                    url="https://ml-neural-networks.vercel.app/llm-workplace-guide/"
+                    color="#f59e0b" // amber
+                />
             </>
         )
     },
@@ -175,6 +180,11 @@ Tokens: [AI] [helps] [people] [work] [faster]`} />
             <>
                 <h3 style={{ fontSize: '1.4rem', marginTop: '1.5rem', marginBottom: '1rem' }}>A. What Is a Prompt?</h3>
                 <p>A prompt is what you ask AI to do.</p>
+                <LinkBlock
+                    title="LLM Prompt Clarity"
+                    url="https://ml-neural-networks.vercel.app/llm-prompt-clarity/"
+                    color="#10b981" // emerald
+                />
                 <CodeBlock language="PROMPT COMPARISON" code={`Bad Prompt:
 "Write email"
 
@@ -183,6 +193,11 @@ Good Prompt:
 
                 <h3 style={{ fontSize: '1.4rem', marginTop: '2rem', marginBottom: '1rem' }}>B. Prompt Engineering</h3>
                 <p>Asking AI clearly and correctly. Like giving instructions to a junior employee.</p>
+                <LinkBlock
+                    title="Reusable Prompt Templates"
+                    url="https://ml-neural-networks.vercel.app/llm-template-library/"
+                    color="#6366f1" // indigo
+                />
 
                 <h3 style={{ fontSize: '1.4rem', marginTop: '2rem', marginBottom: '1rem' }}>C. Prompt Structure (Important)</h3>
                 <CodeBlock language="PROMPT FRAMEWORK" code={`1. Role: "You are an HR manager"
@@ -192,8 +207,13 @@ Good Prompt:
 5. Output Format: "Email, bullet points"`} />
                 <LinkBlock
                     title="Prompt Framework Builder"
-                    url="https://simulation-gen-ai.vercel.app/prompt-framework"
+                    url="https://ml-neural-networks.vercel.app/prompt-framework/"
                     color="#22c55e" // green
+                />
+                <LinkBlock
+                    title="LLM Prompt Refiner"
+                    url="https://ml-neural-networks.vercel.app/llm-prompt-refiner/"
+                    color="#ec4899" // pink
                 />
             </>
         )
@@ -207,6 +227,12 @@ Good Prompt:
                 <p>Controls creativity level.</p>
                 <CodeBlock language="TEMPERATURE SETTINGS" code={`Low Temp (0.1): "Resume writing" (Serious, Factual)
 High Temp (0.8): "Marketing ideas" (Creative, Expressive)`} />
+
+                <LinkBlock
+                    title="Model Settings Explained Visually"
+                    url="https://ml-neural-networks.vercel.app/llm-model-settings/"
+                    color="#8b5cf6" // violet
+                />
 
                 <h3 style={{ fontSize: '1.4rem', marginTop: '2rem', marginBottom: '1rem' }}>B. Max Tokens</h3>
                 <p>Controls how long the AI response can be.</p>
@@ -238,6 +264,18 @@ High value → long explanation`} />
                         <strong>Finance:</strong> Reports, Explaining numbers
                     </div>
                 </div>
+                <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <LinkBlock
+                        title="LLM Role Uses"
+                        url="https://ml-neural-networks.vercel.app/llm-role-uses/"
+                        color="#06b6d4" // cyan
+                    />
+                    <LinkBlock
+                        title="AI for Operations Teams"
+                        url="https://ml-neural-networks.vercel.app/llm-ops-finance-leadership/"
+                        color="#14b8a6" // teal
+                    />
+                </div>
 
                 <h3 style={{ fontSize: '1.4rem', marginTop: '2rem', marginBottom: '1rem' }}>B. AI Tools</h3>
                 <ul style={{ listStyle: 'disc', paddingLeft: '1.5rem', marginBottom: '1.5rem' }}>
@@ -249,6 +287,11 @@ High value → long explanation`} />
                     <img src={chatgptIcon} alt="ChatGPT" style={{ width: '60px', height: '60px', borderRadius: '12px', opacity: 0.8 }} />
                     <img src={geminiIcon} alt="Gemini" style={{ width: '60px', height: '60px', borderRadius: '12px', opacity: 0.8 }} />
                 </div>
+                <LinkBlock
+                    title="AI Tools: Who is best at what"
+                    url="https://ml-neural-networks.vercel.app/llm-tool-landscape/"
+                    color="#3b82f6" // blue
+                />
             </>
         )
     },
@@ -262,6 +305,11 @@ High value → long explanation`} />
 2. Ask AI clearly
 3. Improve the prompt
 4. Compare outputs`} />
+                <LinkBlock
+                    title="Let’s try this for real (3 minutes)"
+                    url="https://ml-neural-networks.vercel.app/llm-prompt-exercise/"
+                    color="#f43f5e" // rose
+                />
                 <p><em>Purpose: Reduce fear, build confidence.</em></p>
 
                 <h3 style={{ fontSize: '1.4rem', marginTop: '2rem', marginBottom: '1rem' }}>B. Final Takeaway</h3>
@@ -559,6 +607,18 @@ Agent: Multi-step workflow (Intern following a checklist)`} />
                     <li><strong>Today:</strong> Awareness & Confidence</li>
                     <li><strong>12 Weeks:</strong> Real Capability & Leadership</li>
                 </ul>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                    <LinkBlock
+                        title="Ask Me Anything: AI @ Work"
+                        url="https://ml-neural-networks.vercel.app/llm-ama-qa/"
+                        color="#8b5cf6" // violet
+                    />
+                    <LinkBlock
+                        title="Today vs The Next 12 Weeks"
+                        url="https://ml-neural-networks.vercel.app/llm-skill-journey/"
+                        color="#ec4899" // pink
+                    />
+                </div>
 
                 <h4 style={{ fontSize: '1.2rem', marginTop: '1.5rem', marginBottom: '0.5rem' }}>Program Structure</h4>
                 <p>Foundations → Tools → Hands-on projects → Agents & automation.</p>

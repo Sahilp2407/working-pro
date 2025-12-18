@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import ThemeToggle from '../components/ThemeToggle';
+import WorkplaceUsageCard from '../components/WorkplaceUsageCard';
 import { day1Content, day2Content } from '../data/content.jsx';
 import { ArrowLeft } from 'lucide-react';
 
@@ -99,6 +100,8 @@ export default function DocPage({ day }) {
                         &copy; 2025 Gen AI Workshop. All rights reserved.
                     </footer>
                 </main>
+
+                <WorkplaceUsageCard day={day} />
             </div>
         </div>
     );
