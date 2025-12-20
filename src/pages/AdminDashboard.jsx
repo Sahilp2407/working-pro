@@ -6,12 +6,14 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { Users, BookOpen, CheckCircle, BarChart3, ArrowLeft, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
+import { useTheme } from '../context/ThemeContext';
 
 export default function AdminDashboard() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+    const { theme } = useTheme();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -40,7 +42,7 @@ export default function AdminDashboard() {
                     <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}>
                         <ArrowLeft size={24} />
                     </button>
-                    <img src="/logo.png" alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+                    <img src={theme === 'dark' ? '/logo-dark.png' : '/logo.png'} alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                     <h1 style={{ fontSize: '1.5rem', fontWeight: 800 }}>LETSUPGRADE GEN AI <span style={{ color: 'var(--text-secondary)', fontWeight: 400, marginLeft: '0.5rem' }}>/ Admin</span></h1>
                 </div>
                 <ThemeToggle />

@@ -5,10 +5,12 @@ import { ArrowRight, BookOpen, Cpu, LogOut, Terminal, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from '../components/ThemeToggle';
 import LogoTicker from '../components/LogoTicker';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const { logout, userData } = useAuth();
+    const { theme } = useTheme();
 
     const handleLogout = () => {
         logout();
@@ -75,7 +77,7 @@ export default function Dashboard() {
                 zIndex: 10
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em' }}>
-                    <img src="/logo.png" alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+                    <img src={theme === 'dark' ? '/logo-dark.png' : '/logo.png'} alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                     LETSUPGRADE GEN AI
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

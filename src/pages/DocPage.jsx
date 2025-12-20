@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import confetti from 'canvas-confetti';
+import { useTheme } from '../context/ThemeContext';
 
 const QuizComponent = ({ sectionId, onComplete }) => {
     const questions = quizzes[sectionId] || [];
@@ -153,6 +154,7 @@ const QuizComponent = ({ sectionId, onComplete }) => {
 export default function DocPage({ day }) {
     const navigate = useNavigate();
     const { user, userData, setUserData } = useAuth();
+    const { theme } = useTheme();
     const content = day === 'day1' ? day1Content : day2Content;
     const [activeId, setActiveId] = useState(content[0]?.id);
     const [showWow, setShowWow] = useState(false);
@@ -273,7 +275,7 @@ export default function DocPage({ day }) {
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <img src="/logo.png" alt="Logo" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
+                    <img src={theme === 'dark' ? '/logo-dark.png' : '/logo.png'} alt="Logo" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
                     <span style={{ fontWeight: 700, letterSpacing: '-0.02em' }}>
                         LETSUPGRADE GEN AI / {day === 'day1' ? 'Day 1' : 'Day 2'}
                     </span>

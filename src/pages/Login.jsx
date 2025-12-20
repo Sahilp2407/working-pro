@@ -119,7 +119,7 @@ export default function Login() {
                                 border: '1px solid rgba(255,255,255,0.08)'
                             }}
                         >
-                            <Sparkles size={28} color="#fff" strokeWidth={1.5} />
+                            <img src="/logo-dark.png" alt="Logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
                         </motion.div>
                         <h2 style={{
                             fontSize: '2rem',
