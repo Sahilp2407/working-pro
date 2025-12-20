@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { db } from '../firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { Users, BookOpen, CheckCircle, BarChart3, ArrowLeft, Search } from 'lucide-react';
+import { Users, BookOpen, CheckCircle, BarChart3, ArrowLeft, Search, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import ThemeToggle from '../components/ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
@@ -51,7 +51,20 @@ export default function AdminDashboard() {
                     </div>
                     <span style={{ color: 'var(--text-secondary)', fontWeight: 400, marginLeft: '0.75rem', fontSize: '1.2rem' }}>/ Admin</span>
                 </div>
-                <ThemeToggle />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <ThemeToggle />
+                    <button
+                        onClick={() => navigate('/profile')}
+                        style={{
+                            background: 'none', border: '1px solid var(--border-color)',
+                            borderRadius: '50%', width: '40px', height: '40px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', color: 'var(--text-primary)'
+                        }}
+                    >
+                        <User size={20} />
+                    </button>
+                </div>
             </header>
 
             <main style={{ maxWidth: '1200px', margin: '0 auto' }}>

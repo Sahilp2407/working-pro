@@ -32,8 +32,14 @@ export const AuthProvider = ({ children }) => {
                     // Initialize user doc if it doesn't exist
                     const initialData = {
                         email: currentUser.email,
+                        name: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Legend'),
                         progress: {
                             completedSections: []
+                        },
+                        stats: {
+                            totalPoints: 0,
+                            totalCorrect: 0,
+                            totalIncorrect: 0
                         },
                         role: 'user'
                     };

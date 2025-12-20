@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import DocPage from './pages/DocPage';
 import AdminDashboard from './pages/AdminDashboard';
+import Profile from './pages/Profile';
 
 const PublicOnlyRoute = ({ children }) => {
   const { user } = useAuth();
@@ -45,6 +46,11 @@ function App() {
                 <AdminRoute>
                   <AdminDashboard />
                 </AdminRoute>
+              </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             } />
             <Route path="/day1" element={

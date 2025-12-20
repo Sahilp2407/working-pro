@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -6,10 +7,10 @@ import ThemeToggle from '../components/ThemeToggle';
 import WorkplaceUsageCard from '../components/WorkplaceUsageCard';
 import { day1Content, day2Content } from '../data/content.jsx';
 import { quizzes } from '../data/quizzes';
-import { ArrowLeft, CheckCircle2, Lock, ArrowRight, Star } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Lock, ArrowRight, Star, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, increment } from 'firebase/firestore';
 import confetti from 'canvas-confetti';
 import { useTheme } from '../context/ThemeContext';
 
@@ -19,7 +20,9 @@ const QuizComponent = ({ sectionId, onComplete }) => {
     const [selectedOption, setSelectedOption] = useState(null);
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState(null);
-    const [score, setScore] = useState(0);
+
+    const [correctCount, setCorrectCount] = useState(0);
+    const [incorrectCount, setIncorrectCount] = useState(0);
     const [shuffledOptions, setShuffledOptions] = useState([]);
 
     useEffect(() => {
@@ -29,7 +32,6 @@ const QuizComponent = ({ sectionId, onComplete }) => {
                 isCorrect: idx === questions[currentQuestion].answer
             }));
 
-            // Fisher-Yates shuffle
             for (let i = optionsWithOriginalIndex.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [optionsWithOriginalIndex[i], optionsWithOriginalIndex[j]] = [optionsWithOriginalIndex[j], optionsWithOriginalIndex[i]];
@@ -44,7 +46,13 @@ const QuizComponent = ({ sectionId, onComplete }) => {
     const handleAnswer = () => {
         const correct = shuffledOptions[selectedOption].isCorrect;
         setIsCorrect(correct);
-        if (correct) setScore(s => s + 1);
+
+        if (correct) {
+            setCorrectCount(c => c + 1);
+        } else {
+            setIncorrectCount(c => c + 1);
+        }
+
         setShowResult(true);
 
         setTimeout(() => {
@@ -54,17 +62,9 @@ const QuizComponent = ({ sectionId, onComplete }) => {
                 setShowResult(false);
                 setIsCorrect(null);
             } else {
-                const finalScore = score + (correct ? 1 : 0);
-                if (finalScore === questions.length) {
-                    onComplete();
-                } else {
-                    alert(`Score: ${finalScore}/${questions.length}. You need 100% to pass. Let's try again!`);
-                    setCurrentQuestion(0);
-                    setSelectedOption(null);
-                    setShowResult(false);
-                    setIsCorrect(null);
-                    setScore(0);
-                }
+                const finalCorrect = correctCount + (correct ? 1 : 0);
+                const finalIncorrect = incorrectCount + (correct ? 0 : 1);
+                onComplete(finalCorrect, finalIncorrect);
             }
         }, 1500);
     };
@@ -88,6 +88,10 @@ const QuizComponent = ({ sectionId, onComplete }) => {
                     fontWeight: 700
                 }}>
                     QUIZ: {currentQuestion + 1} / {questions.length}
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    Correct: <span style={{ color: '#10b981' }}>{correctCount}</span> |
+                    Incorrect: <span style={{ color: '#ef4444' }}>{incorrectCount}</span>
                 </div>
             </div>
 
@@ -159,21 +163,35 @@ export default function DocPage({ day }) {
     const [activeId, setActiveId] = useState(content[0]?.id);
     const [showWow, setShowWow] = useState(false);
 
-    // Get completed sections from userData
     const completedSections = userData?.progress?.completedSections || [];
+
+    const day1Finished = day1Content.every(s => completedSections.includes(s.id));
+
+    // Gate Day 2
+    useEffect(() => {
+        if (day === 'day2' && !day1Finished) {
+            alert("Please complete Day 1 before accessing Day 2!");
+            navigate('/day1');
+        }
+    }, [day, day1Finished, navigate]);
 
     const isLocked = (index) => {
         if (index === 0) return false;
         return !completedSections.includes(content[index - 1].id);
     };
 
-    const handleSectionComplete = async (sectionId) => {
+    const handleSectionComplete = async (sectionId, correct, incorrect) => {
         if (completedSections.includes(sectionId)) return;
 
         try {
+            const pointsDelta = correct - incorrect;
             const userRef = doc(db, 'users', user.uid);
+
             await updateDoc(userRef, {
-                'progress.completedSections': arrayUnion(sectionId)
+                'progress.completedSections': arrayUnion(sectionId),
+                'stats.totalPoints': increment(pointsDelta),
+                'stats.totalCorrect': increment(correct),
+                'stats.totalIncorrect': increment(incorrect)
             });
 
             setUserData(prev => ({
@@ -181,10 +199,15 @@ export default function DocPage({ day }) {
                 progress: {
                     ...prev.progress,
                     completedSections: [...prev.progress.completedSections, sectionId]
+                },
+                stats: {
+                    ...prev.stats,
+                    totalPoints: (prev.stats?.totalPoints || 0) + pointsDelta,
+                    totalCorrect: (prev.stats?.totalCorrect || 0) + correct,
+                    totalIncorrect: (prev.stats?.totalIncorrect || 0) + incorrect
                 }
             }));
 
-            // Success effects
             confetti({
                 particleCount: 150,
                 spread: 70,
@@ -256,7 +279,7 @@ export default function DocPage({ day }) {
             </AnimatePresence>
 
             <header style={{
-                height: '60px',
+                height: '70px',
                 borderBottom: '1px solid var(--border-color)',
                 display: 'flex',
                 alignItems: 'center',
@@ -286,7 +309,20 @@ export default function DocPage({ day }) {
                         / {day === 'day1' ? 'Day 1' : 'Day 2'}
                     </span>
                 </div>
-                <ThemeToggle />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <ThemeToggle />
+                    <button
+                        onClick={() => navigate('/profile')}
+                        style={{
+                            background: 'none', border: '1px solid var(--border-color)',
+                            borderRadius: '50%', width: '40px', height: '40px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', color: 'var(--text-primary)'
+                        }}
+                    >
+                        <User size={20} />
+                    </button>
+                </div>
             </header>
 
             <div style={{ display: 'flex', maxWidth: '1400px', margin: '0 auto' }}>
@@ -367,7 +403,7 @@ export default function DocPage({ day }) {
                                     {!isDone && !locked && (
                                         <QuizComponent
                                             sectionId={section.id}
-                                            onComplete={() => handleSectionComplete(section.id)}
+                                            onComplete={(correct, incorrect) => handleSectionComplete(section.id, correct, incorrect)}
                                         />
                                     )}
 
@@ -386,7 +422,7 @@ export default function DocPage({ day }) {
                                                 <CheckCircle2 size={24} />
                                                 <span style={{ fontWeight: 600 }}>Section Completed!</span>
                                             </div>
-                                            {index < content.length - 1 && !completedSections.includes(content[index + 1].id) && (
+                                            {index < content.length - 1 && !completedSections.includes(content[index + 1].id) ? (
                                                 <button
                                                     onClick={() => document.getElementById(content[index + 1].id)?.scrollIntoView({ behavior: 'smooth' })}
                                                     style={{
@@ -404,6 +440,27 @@ export default function DocPage({ day }) {
                                                 >
                                                     Continue to Next <ArrowRight size={18} />
                                                 </button>
+                                            ) : (
+                                                index === content.length - 1 && day === 'day1' && (
+                                                    <button
+                                                        onClick={() => navigate('/day2')}
+                                                        style={{
+                                                            background: 'linear-gradient(135deg, var(--accent-color) 0%, #a855f7 100%)',
+                                                            color: '#fff',
+                                                            border: 'none',
+                                                            padding: '0.75rem 1.5rem',
+                                                            borderRadius: '10px',
+                                                            fontWeight: 600,
+                                                            cursor: 'pointer',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '8px',
+                                                            boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)'
+                                                        }}
+                                                    >
+                                                        Day 2 is waiting! <ArrowRight size={18} />
+                                                    </button>
+                                                )
                                             )}
                                         </div>
                                     )}

@@ -1,11 +1,13 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, BookOpen, Cpu, LogOut, Terminal, Zap } from 'lucide-react';
+import { ArrowRight, BookOpen, Cpu, LogOut, Terminal, Zap, User, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import ThemeToggle from '../components/ThemeToggle';
 import LogoTicker from '../components/LogoTicker';
 import { useTheme } from '../context/ThemeContext';
+import { day1Content } from '../data/content.jsx';
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -15,6 +17,9 @@ export default function Dashboard() {
     const handleLogout = () => {
         logout();
     };
+
+    const completedSections = userData?.progress?.completedSections || [];
+    const day1Finished = day1Content.every(s => completedSections.includes(s.id));
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -27,48 +32,35 @@ export default function Dashboard() {
     };
 
     const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: {
-            y: 0,
-            opacity: 1,
-            transition: {
-                type: "spring",
-                stiffness: 100
-            }
-        }
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
     };
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            background: 'var(--bg-primary)',
-            color: 'var(--text-primary)',
-            position: 'relative',
-            overflow: 'hidden'
-        }}>
-            {/* Background Gradients */}
+        <div style={{ minHeight: '100vh', background: 'var(--bg-primary)', color: 'var(--text-primary)', overflow: 'hidden' }}>
+            {/* Background Decorative Elements */}
             <div style={{
                 position: 'fixed',
-                top: '-20%',
+                top: '-10%',
                 right: '-10%',
-                width: '60vw',
-                height: '60vw',
-                background: 'radial-gradient(circle, rgba(120, 119, 198, 0.15) 0%, rgba(0,0,0,0) 70%)',
-                filter: 'blur(100px)',
-                zIndex: 0
+                width: '500px',
+                height: '500px',
+                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
+                filter: 'blur(80px)',
+                pointerEvents: 'none'
             }} />
             <div style={{
                 position: 'fixed',
-                bottom: '-20%',
+                bottom: '-10%',
                 left: '-10%',
-                width: '60vw',
-                height: '60vw',
-                background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(0,0,0,0) 70%)',
+                width: '600px',
+                height: '600px',
+                background: 'radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%)',
                 filter: 'blur(100px)',
-                zIndex: 0
+                pointerEvents: 'none'
             }} />
 
-            <nav style={{
+            <header style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -89,50 +81,62 @@ export default function Dashboard() {
                         <button
                             onClick={() => navigate('/admin')}
                             style={{
-                                background: 'var(--accent-color)',
-                                color: '#fff',
-                                border: 'none',
-                                padding: '0.5rem 1rem',
-                                borderRadius: '8px',
+                                background: 'rgba(99, 102, 241, 0.1)',
+                                color: 'var(--accent-color)',
+                                border: '1px solid rgba(99, 102, 241, 0.2)',
+                                padding: '0.6rem 1.2rem',
+                                borderRadius: '12px',
                                 cursor: 'pointer',
-                                fontWeight: 600,
+                                fontWeight: 700,
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '0.5rem'
+                                gap: '0.5rem',
+                                transition: 'all 0.3s'
                             }}
                         >
-                            <Terminal size={16} /> Admin
+                            <Terminal size={18} /> Admin
                         </button>
                     )}
+                    <button
+                        onClick={() => navigate('/profile')}
+                        style={{
+                            background: 'none',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: '50%',
+                            width: '44px',
+                            height: '44px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            color: 'var(--text-primary)',
+                            transition: 'all 0.3s'
+                        }}
+                    >
+                        <User size={22} />
+                    </button>
                     <button
                         onClick={handleLogout}
                         style={{
                             background: 'transparent',
+                            color: 'var(--text-primary)',
                             border: '1px solid var(--border-color)',
-                            padding: '0.5rem 1rem',
-                            borderRadius: '8px',
-                            color: 'var(--text-secondary)',
+                            padding: '0.6rem 1.2rem',
+                            borderRadius: '12px',
                             cursor: 'pointer',
+                            fontWeight: 600,
                             display: 'flex',
                             alignItems: 'center',
                             gap: '0.5rem',
-                            transition: 'all 0.2s'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.color = 'var(--text-primary)';
-                            e.currentTarget.style.borderColor = 'var(--text-primary)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.color = 'var(--text-secondary)';
-                            e.currentTarget.style.borderColor = 'var(--border-color)';
+                            transition: 'all 0.3s'
                         }}
                     >
-                        <LogOut size={16} /> Logout
+                        <LogOut size={18} /> Logout
                     </button>
                 </div>
-            </nav>
+            </header>
 
-            <motion.div
+            <motion.main
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
@@ -146,33 +150,34 @@ export default function Dashboard() {
             >
                 <motion.div variants={itemVariants} style={{ marginBottom: '4rem', textAlign: 'center' }}>
                     <h1 style={{
-                        fontSize: '4rem',
-                        fontWeight: 800,
+                        fontSize: '4.5rem',
+                        fontWeight: 900,
                         marginBottom: '1rem',
-                        background: 'linear-gradient(to bottom, var(--text-primary) 0%, var(--text-secondary) 100%)',
+                        background: 'linear-gradient(to bottom, var(--text-primary) 40%, var(--text-secondary) 100%)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
-                        display: 'inline-block'
+                        display: 'inline-block',
+                        letterSpacing: '-0.04em'
                     }}>
                         Your Journey Begins
                     </h1>
-                    <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
+                    <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}>
                         Transform your understanding of Generative AI through our immersive, hands-on workshop modules.
                     </p>
                 </motion.div>
 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-                    gap: '2rem'
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
+                    gap: '2.5rem'
                 }}>
                     <motion.div variants={itemVariants}>
                         <WorkshopCard
                             number="01"
                             title="Generative AI Fundamentals"
                             description="Master the core concepts of LLMs, transformers, and prompt engineering."
-                            icon={<BookOpen size={24} />}
-                            color="#3b82f6"
+                            icon={<BookOpen size={28} />}
+                            color="#6366f1"
                             onClick={() => navigate('/day1')}
                         />
                     </motion.div>
@@ -181,20 +186,44 @@ export default function Dashboard() {
                         <WorkshopCard
                             number="02"
                             title="Advanced Applications"
-                            description="Build real-world agents, RAG systems, and fine-tune models."
-                            icon={<Cpu size={24} />}
-                            color="#a855f7"
+                            description="Deep dive into RAG, agents, and multi-modal AI systems."
+                            icon={<Zap size={28} />}
+                            color="#ec4899"
                             onClick={() => navigate('/day2')}
+                            locked={!day1Finished}
                         />
                     </motion.div>
-
-
                 </div>
-            </motion.div>
 
-            <div style={{ marginTop: 'auto', paddingBottom: '0' }}>
-                <LogoTicker />
-            </div>
+                <motion.div
+                    variants={itemVariants}
+                    style={{
+                        marginTop: '6rem',
+                        padding: '4rem',
+                        background: 'var(--bg-secondary)',
+                        borderRadius: '40px',
+                        border: '1px solid var(--border-color)',
+                        textAlign: 'center',
+                        boxShadow: '0 30px 60px rgba(0,0,0,0.1)'
+                    }}
+                >
+                    <div style={{
+                        display: 'inline-flex',
+                        padding: '1rem',
+                        background: 'rgba(99, 102, 241, 0.1)',
+                        borderRadius: '20px',
+                        marginBottom: '1.5rem',
+                        color: 'var(--accent-color)'
+                    }}>
+                        <Cpu size={32} />
+                    </div>
+                    <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '1rem' }}>AI Ecosystem Map</h2>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
+                        Explore the industry-leading tools and platforms powering the current AI revolution.
+                    </p>
+                    <LogoTicker />
+                </motion.div>
+            </motion.main>
         </div>
     );
 }
@@ -206,15 +235,15 @@ function WorkshopCard({ number, title, description, icon, color, onClick, locked
             whileHover={!locked ? "hover" : "rest"}
             animate="rest"
             variants={{
-                rest: { y: 0, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' },
-                hover: { y: -10, boxShadow: `0 20px 40px -10px ${color}30` }
+                rest: { y: 0, scale: 1, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' },
+                hover: { y: -12, scale: 1.02, boxShadow: `0 30px 60px -15px ${color}30` }
             }}
-            transition={{ type: "spring", stiffness: 300 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
             onClick={!locked ? onClick : undefined}
             style={{
                 background: 'var(--bg-secondary)',
-                borderRadius: '24px',
-                padding: '2.5rem',
+                borderRadius: '32px',
+                padding: '3rem',
                 border: '1px solid var(--border-color)',
                 cursor: locked ? 'not-allowed' : 'pointer',
                 position: 'relative',
@@ -222,7 +251,8 @@ function WorkshopCard({ number, title, description, icon, color, onClick, locked
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                opacity: locked ? 0.6 : 1
+                opacity: locked ? 0.7 : 1,
+                transition: 'opacity 0.3s ease'
             }}
         >
             <div style={{
@@ -230,7 +260,7 @@ function WorkshopCard({ number, title, description, icon, color, onClick, locked
                 top: 0,
                 right: 0,
                 padding: '1.5rem',
-                fontSize: '4rem',
+                fontSize: '5rem',
                 fontWeight: 900,
                 color: 'var(--text-primary)',
                 opacity: 0.05,
@@ -240,33 +270,39 @@ function WorkshopCard({ number, title, description, icon, color, onClick, locked
             </div>
 
             <div style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '12px',
-                background: `${color}20`,
+                width: '60px',
+                height: '60px',
+                borderRadius: '16px',
+                background: `${color}15`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: color,
-                marginBottom: '2rem'
+                marginBottom: '2.5rem',
+                border: `1px solid ${color}20`
             }}>
                 {icon}
             </div>
 
-            <h3 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.75rem' }}>{title}</h3>
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, flex: 1, marginBottom: '2rem' }}>{description}</p>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '1rem' }}>{title}</h3>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, flex: 1, marginBottom: '2.5rem', fontSize: '1.05rem' }}>{description}</p>
 
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.5rem',
-                fontWeight: 600,
-                color: locked ? 'var(--text-secondary)' : 'var(--text-primary)'
+                gap: '0.6rem',
+                fontWeight: 700,
+                color: locked ? 'var(--text-secondary)' : 'var(--text-primary)',
+                fontSize: '1.1rem'
             }}>
                 {locked ? (
-                    <>Locked <LockIcon size={18} /></>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span>Locked</span> <LockIcon size={20} />
+                    </div>
                 ) : (
-                    <>Start Module <ArrowRight size={18} /></>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span>Start Module</span> <ArrowRight size={20} />
+                    </div>
                 )}
             </div>
 
@@ -276,12 +312,12 @@ function WorkshopCard({ number, title, description, icon, color, onClick, locked
                         rest: { scaleX: 0 },
                         hover: { scaleX: 1 }
                     }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.4, ease: "circOut" }}
                     style={{
                         position: 'absolute',
                         bottom: 0,
                         left: 0,
-                        height: '4px',
+                        height: '6px',
                         width: '100%',
                         background: color,
                         transformOrigin: 'left'
@@ -301,7 +337,7 @@ function LockIcon({ size }) {
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
         >
