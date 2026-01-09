@@ -235,3 +235,18 @@ a {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Auto Scroll Animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.auto-scroll-container:hover {
+  animation-play-state: paused;
+}

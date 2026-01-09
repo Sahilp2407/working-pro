@@ -244,25 +244,22 @@ export default function GsapHero() {
 
 
 
-                {/* Feature Boxes - Horizontal Scroll */}
+                {/* Feature Boxes - Auto Horizontal Scroll */}
                 <div style={{
                     width: '100%',
                     marginTop: '3.5rem',
                     marginBottom: '2rem',
-                    position: 'relative'
+                    position: 'relative',
+                    overflow: 'hidden'
                 }}>
-                    <div style={{
-                        display: 'flex',
-                        gap: '1.5rem',
-                        overflowX: 'auto',
-                        overflowY: 'hidden',
-                        scrollBehavior: 'smooth',
-                        padding: '1rem 0',
-                        WebkitOverflowScrolling: 'touch',
-                        scrollbarWidth: 'none', // Firefox
-                        msOverflowStyle: 'none', // IE/Edge
-                    }}
-                        className="horizontal-scroll"
+                    <div
+                        className="auto-scroll-container"
+                        style={{
+                            display: 'flex',
+                            gap: '1.5rem',
+                            animation: 'scroll 30s linear infinite',
+                            width: 'max-content'
+                        }}
                     >
                         {[
                             { icon: <Map size={28} color="#FFAA02" />, title: "Personalized Roadmap", desc: "Tailored learning path" },
@@ -272,6 +269,77 @@ export default function GsapHero() {
                             { icon: <Users size={28} color="#FFAA02" />, title: "Community + Weekly Sprints", desc: "Learn together" }
                         ].map((item, index) => (
                             <div key={index}
+                                className="feature-card"
+                                style={{
+                                    background: '#FFFFFF',
+                                    border: '1px solid rgba(255, 170, 2, 0.1)',
+                                    borderRadius: '24px',
+                                    padding: '2rem 1.8rem',
+                                    textAlign: 'center',
+                                    transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)',
+                                    cursor: 'default',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    gap: '1rem',
+                                    position: 'relative',
+                                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.02)',
+                                    overflow: 'hidden',
+                                    minWidth: '280px',
+                                    flex: '0 0 auto'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+                                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(255, 170, 2, 0.15)';
+                                    e.currentTarget.style.borderColor = 'rgba(255, 170, 2, 0.3)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.02)';
+                                    e.currentTarget.style.borderColor = 'rgba(255, 170, 2, 0.1)';
+                                }}
+                            >
+                                <div style={{
+                                    width: '64px',
+                                    height: '64px',
+                                    background: 'rgba(255, 170, 2, 0.08)',
+                                    borderRadius: '16px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.3s'
+                                }}>
+                                    {item.icon}
+                                </div>
+                                <h3 style={{
+                                    fontSize: '1.1rem',
+                                    fontWeight: 700,
+                                    color: '#1a1a1a',
+                                    margin: 0,
+                                    lineHeight: 1.3
+                                }}>
+                                    {item.title}
+                                </h3>
+                                <p style={{
+                                    fontSize: '0.9rem',
+                                    color: '#666',
+                                    margin: 0,
+                                    lineHeight: 1.5
+                                }}>
+                                    {item.desc}
+                                </p>
+                            </div>
+                        ))}
+
+                        {/* Duplicate for seamless loop */}
+                        {[
+                            { icon: <Map size={28} color="#FFAA02" />, title: "Personalized Roadmap", desc: "Tailored learning path" },
+                            { icon: <FileCode size={28} color="#FFAA02" />, title: "Proof-of-Work Projects", desc: "Build real portfolio" },
+                            { icon: <UserCheck size={28} color="#FFAA02" />, title: "Resume + LinkedIn Upgrade", desc: "Stand out professionally" },
+                            { icon: <MessageSquare size={28} color="#FFAA02" />, title: "Interview Prep + Mentors", desc: "Expert guidance" },
+                            { icon: <Users size={28} color="#FFAA02" />, title: "Community + Weekly Sprints", desc: "Learn together" }
+                        ].map((item, index) => (
+                            <div key={`dup-${index}`}
                                 className="feature-card"
                                 style={{
                                     background: '#FFFFFF',
