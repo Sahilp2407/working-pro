@@ -230,24 +230,20 @@ export default function GsapHero() {
                         }
                     `}
                 </style>
-                {/* CTA Section - Clean & Premium */}
+                {/* CTA Section - Simple & Clean */}
                 <div ref={ctaRef} style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '2rem',
-                    marginBottom: '4rem',
-                    position: 'relative',
-                    zIndex: 2
+                    gap: '2.5rem',
+                    marginBottom: '4rem'
                 }}>
                     <h1 style={{
                         fontSize: 'clamp(1.5rem, 3vw, 2rem)',
                         color: '#FFAA02',
-                        fontWeight: 700,
-                        lineHeight: 1.2,
+                        fontWeight: 600,
                         margin: 0,
-                        letterSpacing: '-0.02em',
-                        opacity: 0.9
+                        letterSpacing: '-0.01em'
                     }}>
                         Why LetsUpgrade?
                     </h1>
@@ -259,8 +255,6 @@ export default function GsapHero() {
                             color: 'var(--text-primary)',
                             fontWeight: 900,
                             margin: 0,
-                            animation: 'fadeIn 0.5s ease',
-                            opacity: 1,
                             lineHeight: 0.95,
                             letterSpacing: '-0.04em',
                             textAlign: 'center'
@@ -269,106 +263,24 @@ export default function GsapHero() {
                         GET {outcomes[outcomeIndex]}
                     </h2>
 
-                    {/* Premium Tagline Box */}
-                    <div style={{
-                        maxWidth: '800px',
-                        margin: '2rem auto 0',
-                        padding: '2.5rem 3rem',
-                        background: 'linear-gradient(135deg, #FFFFFF 0%, #FFFEF8 100%)',
-                        borderRadius: '24px',
-                        border: '2px solid rgba(255, 170, 2, 0.15)',
-                        boxShadow: '0 20px 60px -15px rgba(255, 170, 2, 0.15), 0 0 0 1px rgba(255, 170, 2, 0.05)',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-                    }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = 'translateY(-4px)';
-                            e.currentTarget.style.boxShadow = '0 30px 80px -15px rgba(255, 170, 2, 0.25), 0 0 0 2px rgba(255, 170, 2, 0.2)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 20px 60px -15px rgba(255, 170, 2, 0.15), 0 0 0 1px rgba(255, 170, 2, 0.05)';
-                        }}
-                    >
-                        {/* Subtle gradient overlay */}
-                        <div style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: '100%',
-                            background: 'linear-gradient(135deg, rgba(255, 170, 2, 0.03) 0%, transparent 50%)',
-                            pointerEvents: 'none'
-                        }} />
-
-                        <p style={{
-                            fontSize: 'clamp(1.25rem, 2.5vw, 1.75rem)',
-                            fontWeight: 600,
-                            color: '#1a1a1a',
-                            letterSpacing: '-0.02em',
-                            lineHeight: 1.5,
-                            margin: 0,
-                            textAlign: 'center',
-                            position: 'relative',
-                            zIndex: 1
-                        }}>
-                            Future-proof your career—
-                            <br />
-                            <span style={{
-                                color: '#FFAA02',
-                                fontWeight: 700,
-                                position: 'relative',
-                                display: 'inline-block'
-                            }}>
-                                without quitting your job.
-                                <svg
-                                    style={{
-                                        position: 'absolute',
-                                        bottom: '-8px',
-                                        left: '0',
-                                        width: '100%',
-                                        height: '8px',
-                                        opacity: 0.6
-                                    }}
-                                    viewBox="0 0 200 8"
-                                    preserveAspectRatio="none"
-                                >
-                                    <path
-                                        d="M0,4 Q50,0 100,4 T200,4"
-                                        fill="none"
-                                        stroke="#FFAA02"
-                                        strokeWidth="3"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-                            </span>
-                        </p>
-
-                        {/* Corner accents */}
-                        <div style={{
-                            position: 'absolute',
-                            top: '12px',
-                            left: '12px',
-                            width: '24px',
-                            height: '24px',
-                            borderTop: '3px solid #FFAA02',
-                            borderLeft: '3px solid #FFAA02',
-                            borderRadius: '8px 0 0 0',
-                            opacity: 0.4
-                        }} />
-                        <div style={{
-                            position: 'absolute',
-                            bottom: '12px',
-                            right: '12px',
-                            width: '24px',
-                            height: '24px',
-                            borderBottom: '3px solid #FFAA02',
-                            borderRight: '3px solid #FFAA02',
-                            borderRadius: '0 0 8px 0',
-                            opacity: 0.4
-                        }} />
-                    </div>
+                    {/* Simple Tagline */}
+                    <p style={{
+                        fontSize: 'clamp(1.25rem, 2.5vw, 1.75rem)',
+                        fontWeight: 600,
+                        color: '#1a1a1a',
+                        letterSpacing: '-0.02em',
+                        lineHeight: 1.5,
+                        margin: 0,
+                        textAlign: 'center',
+                        maxWidth: '700px'
+                    }}>
+                        Future-proof your career—
+                        <br />
+                        <span style={{
+                            color: '#FFAA02',
+                            fontWeight: 700
+                        }}>without quitting your job.</span>
+                    </p>
                 </div>
 
 
