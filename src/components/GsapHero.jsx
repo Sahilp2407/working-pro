@@ -168,37 +168,6 @@ export default function GsapHero() {
             {/* Canvas Background */}
             <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, zIndex: 0 }} />
 
-            {/* Glowing Gradient Orbs */}
-            <div ref={floatRef1} style={{
-                position: 'absolute', top: '15%', right: '15%',
-                width: '400px', height: '400px',
-                background: 'radial-gradient(circle, rgba(255, 170, 2, 0.15) 0%, transparent 70%)',
-            {/* Animated Background Orbs */}
-            <div style={{
-                position: 'absolute',
-                top: '10%',
-                left: '5%',
-                width: '400px',
-                height: '400px',
-                background: 'radial-gradient(circle, rgba(255, 170, 2, 0.08) 0%, transparent 70%)',
-                borderRadius: '50%',
-                filter: 'blur(60px)',
-                animation: 'float 20s ease-in-out infinite',
-                zIndex: 0
-            }} />
-            <div style={{
-                position: 'absolute',
-                bottom: '10%',
-                right: '5%',
-                width: '500px',
-                height: '500px',
-                background: 'radial-gradient(circle, rgba(255, 170, 2, 0.06) 0%, transparent 70%)',
-                borderRadius: '50%',
-                filter: 'blur(80px)',
-                animation: 'float 25s ease-in-out infinite reverse',
-                zIndex: 0
-            }} />
-
             {/* Main Content Container */}
             <div style={{
                 maxWidth: '1400px',
@@ -260,6 +229,16 @@ export default function GsapHero() {
                             0% { transform: translateX(0); }
                             100% { transform: translateX(-50%); }
                         }
+                        @keyframes slideUpFade {
+                            0% {
+                                opacity: 0;
+                                transform: translateY(30px) scale(0.95);
+                            }
+                            100% {
+                                opacity: 1;
+                                transform: translateY(0) scale(1);
+                            }
+                        }
                     `}
                 </style>
                 {/* CTA Section - Simple & Clean */}
@@ -289,7 +268,8 @@ export default function GsapHero() {
                             margin: 0,
                             lineHeight: 0.95,
                             letterSpacing: '-0.04em',
-                            textAlign: 'center'
+                            textAlign: 'center',
+                            animation: 'slideUpFade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
                         }}
                     >
                         GET {outcomes[outcomeIndex]}
