@@ -1,35 +1,44 @@
 :root {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f4f4f5;
-  /* Zinc 100 */
-  --bg-tertiary: #e4e4e7;
-  --text-primary: #18181b;
-  /* Zinc 900 */
-  --text-secondary: #52525b;
-  /* Zinc 600 */
-  --border-color: #e4e4e7;
-  --accent-color: #6366f1;
-  /* Indigo 500 */
-  --accent-rgb: 99, 102, 241;
+  --bg-primary: #FFFBED;
+  /* Light Cream background */
+  --bg-secondary: #ffffff;
+  /* White for cards */
+  --bg-tertiary: #f7f3e8;
+  /* Slightly darker cream */
+  --text-primary: #1a1a1a;
+  /* Dark text */
+  --text-secondary: #5c5c5c;
+  /* Medium gray */
+  --border-color: #e8e4db;
+  /* Subtle border */
+  --accent-color: #FFAA02;
+  /* LetsUpgrade Gold */
+  --accent-secondary: #FFD700;
+  /* Light Gold */
+  --accent-rgb: 255, 170, 2;
   --sidebar-width: 280px;
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+
 [data-theme='dark'] {
-  --bg-primary: #09090b;
-  /* Zinc 950 */
-  --bg-secondary: #0c0c0e;
-  /* Slightly darker */
-  /* Zinc 900 */
-  --bg-tertiary: #18181b;
-  --text-primary: #f4f4f5;
-  /* Zinc 100 */
-  --text-secondary: #a1a1aa;
-  /* Zinc 400 */
-  --border-color: #1e1e21;
-  --accent-color: #818cf8;
-  /* Indigo 400 for better contrast on dark */
-  --accent-rgb: 129, 140, 248;
+  --bg-primary: #1a1a1a;
+  /* Dark background */
+  --bg-secondary: #242424;
+  /* Slightly lighter dark */
+  --bg-tertiary: #2d2d2d;
+  /* Medium dark */
+  --text-primary: #ffffff;
+  /* White text */
+  --text-secondary: #b0b0b0;
+  /* Light gray */
+  --border-color: #3a3a3a;
+  /* Dark border */
+  --accent-color: #FFAA02;
+  /* Gold for dark mode */
+  --accent-secondary: #FFE066;
+  /* Lighter Gold */
+  --accent-rgb: 255, 170, 2;
 }
 
 * {

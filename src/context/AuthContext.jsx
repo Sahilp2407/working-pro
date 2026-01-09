@@ -1,14 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-import {
-    onAuthStateChanged,
-    signInWithPopup,
-    signOut,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword
-} from 'firebase/auth';
-import { doc, getDoc, setDoc, updateDoc, onSnapshot } from 'firebase/firestore';
-import { auth, db, googleProvider } from '../firebase';
+import { auth, db, googleProvider, signInWithPopup, signOut } from '../config/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const AuthContext = createContext(null);
 
@@ -18,96 +12,97 @@ export const AuthProvider = ({ children }) => {
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
+        // Safety timeout to prevent infinite loading/black screen
+        const safetyTimer = setTimeout(() => {
+            console.warn("Auth loading timed out, forcing render");
+            setLoading(false);
+        }, 2500);
+
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
             if (currentUser) {
-                // Fetch or sync user data from Firestore
-                const userDocRef = doc(db, 'users', currentUser.uid);
+                try {
+                    const userRef = doc(db, 'users', currentUser.uid);
+                    const userSnap = await getDoc(userRef);
 
-                // Real-time listener for user data
-                const unsubDoc = onSnapshot(userDocRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        setUserData(docSnap.data());
+                    if (userSnap.exists()) {
+                        setUserData(userSnap.data());
                     } else {
-                        // Create initial record if it doesn't exist
-                        const initialData = {
+                        // Create new user doc
+                        const localName = localStorage.getItem('user_name');
+                        const localPhone = localStorage.getItem('user_phone');
+                        const newUser = {
+                            uid: currentUser.uid,
                             email: currentUser.email,
-                            name: currentUser.displayName || currentUser.email.split('@')[0],
-                            createdAt: new Date().toISOString(),
-                            progress: {
-                                completedSections: []
-                            },
-                            stats: {
-                                totalPoints: 0,
-                                totalCorrect: 0,
-                                totalIncorrect: 0
-                            },
+                            name: localName || currentUser.displayName || currentUser.email.split('@')[0],
+                            phone: localPhone || '',
+                            photoURL: currentUser.photoURL,
+                            createdAt: serverTimestamp(),
+                            progress: { completedSections: [] },
+                            stats: { totalPoints: 0, totalCorrect: 0, totalIncorrect: 0 },
                             role: 'user'
                         };
-                        setDoc(userDocRef, initialData);
-                        setUserData(initialData);
+                        await setDoc(userRef, newUser);
+                        setUserData(newUser);
                     }
-                });
-
-                setLoading(false);
-                return () => unsubDoc();
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                    // Fallback to avoid crash
+                    setUserData({
+                        uid: currentUser.uid,
+                        email: currentUser.email,
+                        progress: { completedSections: [] },
+                        stats: { correct: 0, incorrect: 0 }
+                    });
+                }
             } else {
                 setUserData(null);
-                setLoading(false);
             }
+            clearTimeout(safetyTimer); // Clear safety timer on success
+            setLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => {
+            unsubscribe();
+            clearTimeout(safetyTimer);
+        };
     }, []);
 
-    const login = (email, password) => {
-        return signInWithEmailAndPassword(auth, email, password);
-    };
-
-    const signup = (email, password) => {
-        return createUserWithEmailAndPassword(auth, email, password);
-    };
-
-    const loginWithGoogle = () => {
-        return signInWithPopup(auth, googleProvider);
-    };
-
-    const logout = () => {
-        return signOut(auth);
-    };
-
-    const updateUserData = async (newData) => {
-        if (!user) return;
-
-        const userDocRef = doc(db, 'users', user.uid);
-        let updatedData;
-
-        if (typeof newData === 'function') {
-            updatedData = newData(userData);
-        } else if (newData && (newData.progress || newData.stats)) {
-            updatedData = newData;
-        } else {
-            updatedData = { ...userData, ...newData };
-        }
-
+    const loginWithGoogle = async () => {
         try {
-            await updateDoc(userDocRef, updatedData);
+            const result = await signInWithPopup(auth, googleProvider);
+            return result.user;
         } catch (error) {
-            console.error("Error updating user data:", error);
-            // Fallback to setDoc if it doesn't exist
-            await setDoc(userDocRef, updatedData, { merge: true });
+            console.error("Google Sign-in Error:", error);
+            throw error;
         }
     };
+
+    const logout = async () => {
+        try {
+            await signOut(auth);
+            setUser(null);
+            setUserData(null);
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_phone');
+        } catch (error) {
+            console.error("Logout Error:", error);
+        }
+    };
+
+    // Dummy functions for compatibility if app uses email/pass elsewhere
+    const login = async () => console.warn("Email login not implemented in this version");
+    const signup = async () => console.warn("Email signup not implemented in this version");
 
     const value = {
         user,
         userData,
         loading,
-        login,
-        signup,
         loginWithGoogle,
         logout,
-        setUserData: updateUserData
+        login,
+        signup,
+        setUserData // Exposing this to allow updates if needed
     };
 
     return (

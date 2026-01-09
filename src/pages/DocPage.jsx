@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { db } from '../config/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
@@ -10,6 +12,12 @@ import { ArrowLeft, CheckCircle2, Lock, ArrowRight, Star, User } from 'lucide-re
 import { useAuth } from '../context/AuthContext';
 import confetti from 'canvas-confetti';
 import { useTheme } from '../context/ThemeContext';
+import OutcomeSurveyModal from '../components/OutcomeSurveyModal';
+import Day1FeedbackModal from '../components/Day1FeedbackModal';
+import ScoreCardModal from '../components/ScoreCardModal';
+import Day2ApplicationModal from '../components/Day2ApplicationModal';
+import Day2FeedbackModal from '../components/Day2FeedbackModal';
+import FinalFeedbackModal from '../components/FinalFeedbackModal';
 
 const QuizComponent = ({ sectionId, onComplete }) => {
     const questions = quizzes[sectionId] || [];
@@ -42,28 +50,39 @@ const QuizComponent = ({ sectionId, onComplete }) => {
 
     const handleAnswer = () => {
         const correct = shuffledOptions[selectedOption].isCorrect;
-        setIsCorrect(correct);
 
         if (correct) {
+            setIsCorrect(true);
             setCorrectCount(c => c + 1);
+            setShowResult(true);
+
+            setTimeout(() => {
+                if (currentQuestion < questions.length - 1) {
+                    setCurrentQuestion(q => q + 1);
+                    setSelectedOption(null);
+                    setShowResult(false);
+                    setIsCorrect(null);
+                } else {
+                    const finalCorrect = correctCount + 1;
+                    const finalIncorrect = incorrectCount;
+                    onComplete(finalCorrect, finalIncorrect);
+                }
+            }, 1000);
         } else {
+            // Incorrect Answer Handling
+            setIsCorrect(false);
             setIncorrectCount(c => c + 1);
-        }
 
-        setShowResult(true);
+            // Show feedback but DON'T move forward
+            setShowResult(true);
 
-        setTimeout(() => {
-            if (currentQuestion < questions.length - 1) {
-                setCurrentQuestion(q => q + 1);
-                setSelectedOption(null);
+            // Allow Retry after short delay
+            setTimeout(() => {
                 setShowResult(false);
                 setIsCorrect(null);
-            } else {
-                const finalCorrect = correctCount + (correct ? 1 : 0);
-                const finalIncorrect = incorrectCount + (correct ? 0 : 1);
-                onComplete(finalCorrect, finalIncorrect);
-            }
-        }, 1500);
+                setSelectedOption(null); // Clear selection to let them try again
+            }, 1000);
+        }
     };
 
     return (
@@ -110,8 +129,12 @@ const QuizComponent = ({ sectionId, onComplete }) => {
                             textAlign: 'left',
                             borderRadius: '14px',
                             border: '1px solid',
-                            borderColor: selectedOption === idx ? 'var(--accent-color)' : 'var(--border-color)',
-                            background: selectedOption === idx ? 'rgba(var(--accent-rgb), 0.1)' : 'transparent',
+                            borderColor: selectedOption === idx
+                                ? (showResult ? (option.isCorrect ? '#10b981' : '#ef4444') : 'var(--accent-color)')
+                                : 'var(--border-color)',
+                            background: selectedOption === idx
+                                ? (showResult ? (option.isCorrect ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)') : 'rgba(var(--accent-rgb), 0.1)')
+                                : 'transparent',
                             color: 'var(--text-primary)',
                             cursor: showResult ? 'default' : 'pointer',
                             transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -122,11 +145,10 @@ const QuizComponent = ({ sectionId, onComplete }) => {
                         }}
                     >
                         <span>{option.text}</span>
-                        {showResult && option.isCorrect && (
-                            <CheckCircle2 size={18} style={{ color: '#10b981', flexShrink: 0 }} />
-                        )}
-                        {showResult && selectedOption === idx && !option.isCorrect && (
-                            <span style={{ color: '#ef4444', fontWeight: 800, flexShrink: 0 }}>✕</span>
+                        {showResult && selectedOption === idx && (
+                            option.isCorrect ?
+                                <CheckCircle2 size={18} style={{ color: '#10b981', flexShrink: 0 }} /> :
+                                <span style={{ color: '#ef4444', fontWeight: 800, flexShrink: 0 }}>✕</span>
                         )}
                     </button>
                 ))}
@@ -166,25 +188,24 @@ export default function DocPage({ day }) {
     const [showFail, setShowFail] = useState(false);
     const [failScore, setFailScore] = useState({ correct: 0, total: 0 });
     const [quizKey, setQuizKey] = useState(0);
+    const [showOutcomeModal, setShowOutcomeModal] = useState(false);
+    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+    const [showScoreModal, setShowScoreModal] = useState(false);
+    const [showDay2AppModal, setShowDay2AppModal] = useState(false);
+    const [showDay2FeedbackModal, setShowDay2FeedbackModal] = useState(false);
+    const [showFinalFeedbackModal, setShowFinalFeedbackModal] = useState(false);
 
+    // Safe Usage of userData
     const completedSections = userData?.progress?.completedSections || [];
 
     const day1Finished = day1Content.every(s => completedSections.includes(s.id));
-
-    // Gate Day 2
-    useEffect(() => {
-        if (day === 'day2' && !day1Finished) {
-            alert("Please complete Day 1 before accessing Day 2!");
-            navigate('/day1');
-        }
-    }, [day, day1Finished, navigate]);
+    const day2Finished = day2Content.every(s => completedSections.includes(s.id));
 
     const isLocked = (index) => {
-        if (index === 0) return false;
-        return !completedSections.includes(content[index - 1].id);
+        return false; // Unlock all for now
     };
 
-    const handleSectionComplete = async (sectionId, correct, incorrect) => {
+    const handleSectionComplete = (sectionId, correct, incorrect) => {
         const total = correct + incorrect;
         if (correct < 3) {
             setFailScore({ correct, total });
@@ -192,27 +213,45 @@ export default function DocPage({ day }) {
             return;
         }
 
-        if (completedSections.includes(sectionId)) return;
-
         try {
-            const pointsDelta = correct - incorrect;
-
-            const updatedUserData = {
-                ...userData,
-                progress: {
-                    ...userData.progress,
-                    completedSections: [...userData.progress.completedSections, sectionId]
-                },
-                stats: {
-                    ...userData.stats,
-                    totalPoints: (userData.stats?.totalPoints || 0) + pointsDelta,
-                    totalCorrect: (userData.stats?.totalCorrect || 0) + correct,
-                    totalIncorrect: (userData.stats?.totalIncorrect || 0) + incorrect
-                }
+            // Safe access to userData with defaults
+            const safeUserData = userData || {
+                progress: { completedSections: [] },
+                stats: { totalPoints: 0, totalCorrect: 0, totalIncorrect: 0 }
             };
 
-            setUserData(updatedUserData);
+            const currentCompletedSections = safeUserData.progress?.completedSections || [];
+            const isAlreadyCompleted = currentCompletedSections.includes(sectionId);
 
+            const pointsDelta = correct - incorrect;
+
+            let updatedUserData = safeUserData;
+
+            if (!isAlreadyCompleted) {
+                updatedUserData = {
+                    ...safeUserData,
+                    progress: {
+                        ...(safeUserData.progress || {}),
+                        completedSections: [...currentCompletedSections, sectionId]
+                    },
+                    stats: {
+                        ...(safeUserData.stats || {}),
+                        totalPoints: (safeUserData.stats?.totalPoints || 0) + pointsDelta,
+                        totalCorrect: (safeUserData.stats?.totalCorrect || 0) + correct,
+                        totalIncorrect: (safeUserData.stats?.totalIncorrect || 0) + incorrect
+                    }
+                };
+
+                setUserData(updatedUserData); // Update Context locally
+
+                // Persist to Firestore
+                if (user) {
+                    setDoc(doc(db, 'users', user.uid), updatedUserData, { merge: true })
+                        .catch(err => console.error("Failed to save progress to DB:", err));
+                }
+            }
+
+            // Visual Feedback
             confetti({
                 particleCount: 200,
                 spread: 100,
@@ -220,7 +259,6 @@ export default function DocPage({ day }) {
                 colors: ['#6366f1', '#a855f7', '#ec4899', '#f59e0b', '#10b981']
             });
 
-            // Second burst for more cheer
             setTimeout(() => {
                 confetti({
                     particleCount: 150,
@@ -237,12 +275,60 @@ export default function DocPage({ day }) {
             }, 500);
 
             setShowWow(true);
-            setTimeout(() => setShowWow(false), 3000);
+            setTimeout(() => {
+                setShowWow(false);
+
+                // Module 1: Outcome Survey
+                if (day === 'day1' && sectionId === 'intro-basics') {
+                    const surveyDone = localStorage.getItem('outcome_survey_v2_done');
+                    if (!surveyDone) {
+                        setShowOutcomeModal(true);
+                    }
+                }
+
+                // Module 8 (Conclusion): Day 1 Feedback -> Score Card
+                if (day === 'day1' && sectionId === 'conclusion') {
+                    const feedbackDone = localStorage.getItem('day1_feedback_v2_done');
+                    if (!feedbackDone) {
+                        setShowFeedbackModal(true);
+                    } else {
+                        setShowScoreModal(true);
+                    }
+                }
+
+                // Day 2...
+                if (day === 'day2' && sectionId === 'video-tools') {
+                    const appSurveyDone = localStorage.getItem('day2_video_survey_done');
+                    if (!appSurveyDone) {
+                        setShowDay2AppModal(true);
+                    }
+                }
+
+                if (day === 'day2' && sectionId === 'day2-qa-soft-pitch') {
+                    const feedbackDone = localStorage.getItem('day2_feedback_v2_done');
+                    if (!feedbackDone) {
+                        setShowDay2FeedbackModal(true);
+                    } else {
+                        setShowScoreModal(true);
+                    }
+                }
+            }, 3000);
 
         } catch (err) {
             console.error("Error updating progress:", err);
         }
     };
+
+    // Day Completion Logic
+    useEffect(() => {
+        if (day === 'day1' && day1Finished) {
+            // ...
+        } else if (day === 'day2' && day2Finished) {
+            if (true) { // Always show for now if logic met
+                setTimeout(() => setShowScoreModal(true), 2000);
+            }
+        }
+    }, [day, day1Finished, day2Finished]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -539,7 +625,7 @@ export default function DocPage({ day }) {
                                                     You've mastered the fundamentals. Day 2 with advanced AI agents and RAG awaits you.
                                                 </p>
                                                 <button
-                                                    onClick={() => navigate('/day2')}
+                                                    onClick={() => navigate('/curriculum')}
                                                     style={{
                                                         background: 'var(--accent-color)',
                                                         color: '#fff',
@@ -600,12 +686,151 @@ export default function DocPage({ day }) {
                         );
                     })}
 
-                    <footer style={{ marginTop: '8rem', color: 'var(--text-secondary)', fontSize: '0.9rem', textAlign: 'center' }}>
-                        &copy; 2025 Gen AI Workshop. Built with Precision.
+                    <footer style={{
+                        marginTop: '8rem',
+                        color: 'var(--text-secondary)',
+                        fontSize: '0.9rem',
+                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '1.5rem',
+                        paddingBottom: '2rem'
+                    }}>
+                        <style>
+                            {`
+                                @keyframes pulse-glow {
+                                    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 139, 54, 0.4); }
+                                    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(244, 139, 54, 0); }
+                                    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244, 139, 54, 0); }
+                                }
+                            `}
+                        </style>
+
+                        <button
+                            onClick={() => {
+                                setShowScoreModal(true);
+                            }}
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                margin: '0 auto',
+                                background: 'linear-gradient(135deg, #FF6B00 0%, #FF8C00 100%)',
+                                color: 'white',
+                                border: 'none',
+                                padding: '1rem 2rem',
+                                borderRadius: '50px',
+                                cursor: 'pointer',
+                                fontSize: '1.1rem',
+                                fontWeight: 700,
+                                boxShadow: '0 8px 20px rgba(255, 107, 0, 0.3)',
+                                transition: 'all 0.3s ease',
+                                animation: 'pulse-glow 2s infinite'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.animation = 'none'; // Pause pulse on hover
+                                e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
+                                e.currentTarget.style.boxShadow = '0 12px 25px rgba(255, 107, 0, 0.4)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.animation = 'pulse-glow 2s infinite';
+                                e.currentTarget.style.transform = 'scale(1) translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 8px 20px rgba(255, 107, 0, 0.3)';
+                            }}
+                        >
+                            <Star size={20} fill="currentColor" /> Check Your Score
+                        </button>
+
+                        <div style={{ opacity: 0.7 }}>&copy; 2025 Gen AI Workshop. Built with Precision.</div>
                     </footer>
                 </main>
 
                 <WorkplaceUsageCard day={day} />
+
+                {/* Outcome Survey Modal */}
+                <OutcomeSurveyModal
+                    isOpen={showOutcomeModal}
+                    onClose={() => setShowOutcomeModal(false)}
+                    onComplete={() => {
+                        localStorage.setItem('outcome_survey_v2_done', 'true');
+                        setShowOutcomeModal(false);
+                    }}
+                />
+
+                {/* Score Card Modal */}
+                <ScoreCardModal
+                    isOpen={showScoreModal}
+                    onClose={() => {
+                        localStorage.setItem(day === 'day1' ? 'day1_score_shown' : 'day2_score_shown', 'true');
+                        setShowScoreModal(false);
+
+                        // If Day 2, navigate to landing page (Curriculum)
+                        if (day === 'day2') {
+                            navigate('/curriculum');
+                        }
+
+                        // If Day 1, check if feedback is done, if so, redirect
+                        if (day === 'day1') {
+                            if (localStorage.getItem('day1_feedback_v2_done')) { // Check v2 key
+                                navigate('/curriculum');
+                            }
+                            // If not done... handled by flow
+                        }
+                    }}
+                    onCertificate={() => {
+                        localStorage.setItem('day2_score_shown', 'true');
+                        setShowScoreModal(false);
+                        // Trigger Final Feedback before Certificate
+                        setShowFinalFeedbackModal(true);
+                    }}
+                    day={day}
+                    stats={{
+                        correct: userData?.stats?.totalCorrect || 0,
+                        incorrect: userData?.stats?.totalIncorrect || 0
+                    }}
+                />
+
+                {/* Day 1 Feedback Modal */}
+                <Day1FeedbackModal
+                    isOpen={showFeedbackModal}
+                    onClose={() => setShowFeedbackModal(false)}
+                    onComplete={() => {
+                        localStorage.setItem('day1_feedback_v2_done', 'true');
+                        setShowFeedbackModal(false);
+                        // Open Score Card after Feedback
+                        setShowScoreModal(true);
+                    }}
+                />
+                <Day2ApplicationModal
+                    isOpen={showDay2AppModal}
+                    onClose={() => setShowDay2AppModal(false)}
+                    onComplete={() => {
+                        localStorage.setItem('day2_video_survey_done', 'true');
+                        setShowDay2AppModal(false);
+                    }}
+                />
+
+                {/* Day 2 Final Feedback Modal */}
+                <Day2FeedbackModal
+                    isOpen={showDay2FeedbackModal}
+                    onClose={() => setShowDay2FeedbackModal(false)}
+                    onComplete={() => {
+                        localStorage.setItem('day2_feedback_v2_done', 'true');
+                        setShowDay2FeedbackModal(false);
+                        setShowScoreModal(true); // Open Score Card after feedback
+                    }}
+                />
+
+                {/* Final Feedback Modal (Before Certificate) */}
+                <FinalFeedbackModal
+                    isOpen={showFinalFeedbackModal}
+                    onClose={() => setShowFinalFeedbackModal(false)}
+                    onComplete={() => {
+                        setShowFinalFeedbackModal(false);
+                        navigate('/certificate');
+                    }}
+                />
             </div>
         </div>
     );

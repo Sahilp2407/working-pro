@@ -11,7 +11,7 @@ import Profile from './pages/Profile';
 const PublicOnlyRoute = ({ children }) => {
   const { user } = useAuth();
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
   return children;
 };
@@ -20,10 +20,18 @@ const AdminRoute = ({ children }) => {
   const { userData, loading } = useAuth();
   if (loading) return null;
   if (userData?.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
   return children;
 };
+
+import LandingPage from './pages/LandingPage';
+import ScorecardTest from './pages/ScorecardTest';
+import CertificatePage from './pages/CertificatePage'; // Re-imported
+import HardcopyPage from './pages/HardcopyPage';
+import CurriculumPage from './pages/CurriculumPage';
+import SelectionPage from './pages/SelectionPage';
+
 
 function App() {
   return (
@@ -31,16 +39,21 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/" element={
+            {/* Public Landing Page */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/curriculum" element={<CurriculumPage />} />
+            <Route path="/get-started" element={<SelectionPage />} />
+
+            {/* Login Page (Redirects to /dashboard if already logged in) */}
+            <Route path="/login" element={
               <PublicOnlyRoute>
                 <Login />
               </PublicOnlyRoute>
             } />
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
+
+            {/* Dashboard redirects to Landing Page */}
+            <Route path="/dashboard" element={<Navigate to="/" replace />} />
+
             <Route path="/admin" element={
               <ProtectedRoute>
                 <AdminRoute>
@@ -63,6 +76,21 @@ function App() {
                 <DocPage day="day2" />
               </ProtectedRoute>
             } />
+            <Route path="/scorecard-test" element={<ScorecardTest />} />
+
+            {/* Certificate Route */}
+            <Route path="/certificate" element={
+              <ProtectedRoute>
+                <CertificatePage />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/hardcopy" element={
+              <ProtectedRoute>
+                <HardcopyPage />
+              </ProtectedRoute>
+            } />
+
           </Routes>
         </Router>
       </AuthProvider>

@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { loginWithGoogle } = useAuth();
+    const { loginWithGoogle, user } = useAuth();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
-    // Popup state
     const [showPopup, setShowPopup] = useState(false);
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
@@ -20,7 +17,6 @@ export default function Login() {
         setError('');
         try {
             await loginWithGoogle();
-            // Instead of navigating immediately, show popup
             setShowPopup(true);
         } catch (err) {
             setError(err.message);
@@ -29,29 +25,13 @@ export default function Login() {
         }
     };
 
-    const handleSubmitDetails = () => {
+    const handleSubmit = () => {
         if (!name.trim() || !phone.trim()) {
-            setError('Please enter both name and phone number');
+            setError('Please fill all fields');
             return;
         }
-
-        // Mock save details
-        const userDetails = {
-            name,
-            phone,
-            onboardedAt: new Date().toISOString()
-        };
-        localStorage.setItem('user_details', JSON.stringify(userDetails));
-
-        // Dynamic Navigation
-        const params = new URLSearchParams(location.search);
-        const redirectPath = params.get('redirect');
-
-        if (redirectPath) {
-            navigate(redirectPath);
-        } else {
-            navigate('/?scroll=curriculum');
-        }
+        localStorage.setItem('userDetails', JSON.stringify({ name, phone }));
+        navigate('/');
     };
 
     return (
@@ -67,7 +47,7 @@ export default function Login() {
             alignItems: 'center',
             justifyContent: 'center'
         }}>
-            {/* Background Effects */}
+            {/* --- Premium Background Effects --- */}
             <div style={{
                 position: 'absolute',
                 top: 0, left: 0, right: 0, bottom: 0,
@@ -96,7 +76,7 @@ export default function Login() {
                 }}
             />
 
-            {/* Login Card */}
+            {/* --- Login Card --- */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -171,86 +151,10 @@ export default function Login() {
                         </motion.div>
                     )}
 
-                    {/* Inputs */}
-                    <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: '#a1a1aa' }}>Full Name</label>
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                placeholder="Enter your name"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.8rem 1rem',
-                                    background: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    borderRadius: '12px',
-                                    color: '#fff',
-                                    fontSize: '0.95rem',
-                                    outline: 'none',
-                                    transition: 'border-color 0.2s'
-                                }}
-                                onFocus={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.3)'}
-                                onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
-                            />
-                        </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: '#a1a1aa' }}>Phone Number</label>
-                            <input
-                                type="tel"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                placeholder="Enter your phone number"
-                                style={{
-                                    width: '100%',
-                                    padding: '0.8rem 1rem',
-                                    background: 'rgba(255,255,255,0.05)',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    borderRadius: '12px',
-                                    color: '#fff',
-                                    fontSize: '0.95rem',
-                                    outline: 'none',
-                                    transition: 'border-color 0.2s'
-                                }}
-                                onFocus={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.3)'}
-                                onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
-                            />
-                        </div>
-                    </div>
-
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={async () => {
-                            if (!name.trim() || !phone.trim()) {
-                                setError('Please enter your Name and Phone Number first.');
-                                return;
-                            }
-
-                            setLoading(true);
-                            setError('');
-
-                            // Save details mock
-                            localStorage.setItem('user_name', name);
-                            localStorage.setItem('user_phone', phone);
-
-                            try {
-                                await loginWithGoogle();
-                                // Navigate immediately after successful login
-                                const params = new URLSearchParams(location.search);
-                                const redirectPath = params.get('redirect');
-
-                                if (redirectPath) {
-                                    navigate(redirectPath);
-                                } else {
-                                    navigate('/?scroll=curriculum');
-                                }
-                            } catch (err) {
-                                setError(err.message);
-                                setLoading(false);
-                            }
-                        }}
+                        onClick={handleGoogleLogin}
                         disabled={loading}
                         style={{
                             width: '100%',
@@ -292,7 +196,8 @@ export default function Login() {
                     </p>
                 </div>
             </motion.div>
-
         </div>
     );
 }
+
+// Popup code will be added here

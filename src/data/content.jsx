@@ -196,7 +196,7 @@ Good Prompt:
                 <LinkBlock
                     title="Reusable Prompt Templates"
                     url="https://ml-neural-networks.vercel.app/llm-template-library/"
-                    color="#6366f1" // indigo
+                    color="#FF5722" // orange
                 />
 
                 <h3 style={{ fontSize: '1.4rem', marginTop: '2rem', marginBottom: '1rem' }}>C. Prompt Structure (Important)</h3>
@@ -213,7 +213,7 @@ Good Prompt:
                 <LinkBlock
                     title="LLM Prompt Refiner"
                     url="https://ml-neural-networks.vercel.app/llm-prompt-refiner/"
-                    color="#ec4899" // pink
+                    color="#F48B36" // light orange
                 />
             </>
         )
@@ -616,7 +616,7 @@ Agent: Multi-step workflow (Intern following a checklist)`} />
                     <LinkBlock
                         title="Today vs The Next 12 Weeks"
                         url="https://ml-neural-networks.vercel.app/llm-skill-journey/"
-                        color="#ec4899" // pink
+                        color="#F48B36" // light orange
                     />
                 </div>
 
