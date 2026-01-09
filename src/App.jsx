@@ -11,7 +11,7 @@ import Profile from './pages/Profile';
 const PublicOnlyRoute = ({ children }) => {
   const { user } = useAuth();
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/curriculum" replace />;
   }
   return children;
 };
@@ -51,8 +51,8 @@ function App() {
               </PublicOnlyRoute>
             } />
 
-            {/* Dashboard redirects to Landing Page */}
-            <Route path="/dashboard" element={<Navigate to="/" replace />} />
+            {/* Dashboard redirects to Curriculum */}
+            <Route path="/dashboard" element={<Navigate to="/curriculum" replace />} />
 
             <Route path="/admin" element={
               <ProtectedRoute>

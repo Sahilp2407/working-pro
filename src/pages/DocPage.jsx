@@ -280,7 +280,7 @@ export default function DocPage({ day }) {
 
                 // Module 1: Outcome Survey
                 if (day === 'day1' && sectionId === 'intro-basics') {
-                    const surveyDone = localStorage.getItem('outcome_survey_v2_done');
+                    const surveyDone = userData?.surveys?.outcome_survey;
                     if (!surveyDone) {
                         setShowOutcomeModal(true);
                     }
@@ -288,7 +288,7 @@ export default function DocPage({ day }) {
 
                 // Module 8 (Conclusion): Day 1 Feedback -> Score Card
                 if (day === 'day1' && sectionId === 'conclusion') {
-                    const feedbackDone = localStorage.getItem('day1_feedback_v2_done');
+                    const feedbackDone = userData?.surveys?.day1_feedback;
                     if (!feedbackDone) {
                         setShowFeedbackModal(true);
                     } else {
@@ -296,16 +296,17 @@ export default function DocPage({ day }) {
                     }
                 }
 
-                // Day 2...
+                // Day 2 Module 7: Application Survey
                 if (day === 'day2' && sectionId === 'video-tools') {
-                    const appSurveyDone = localStorage.getItem('day2_video_survey_done');
+                    const appSurveyDone = userData?.surveys?.day2_application;
                     if (!appSurveyDone) {
                         setShowDay2AppModal(true);
                     }
                 }
 
+                // Day 2 Last Module: Feedback
                 if (day === 'day2' && sectionId === 'day2-qa-soft-pitch') {
-                    const feedbackDone = localStorage.getItem('day2_feedback_v2_done');
+                    const feedbackDone = userData?.surveys?.day2_feedback;
                     if (!feedbackDone) {
                         setShowDay2FeedbackModal(true);
                     } else {

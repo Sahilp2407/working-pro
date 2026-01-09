@@ -50,7 +50,7 @@ export default function Login() {
         if (redirectPath) {
             navigate(redirectPath);
         } else {
-            navigate('/?scroll=curriculum');
+            navigate('/curriculum');
         }
     };
 
@@ -244,7 +244,7 @@ export default function Login() {
                                 if (redirectPath) {
                                     navigate(redirectPath);
                                 } else {
-                                    navigate('/?scroll=curriculum');
+                                    navigate('/curriculum');
                                 }
                             } catch (err) {
                                 setError(err.message);

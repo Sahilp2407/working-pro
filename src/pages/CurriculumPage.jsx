@@ -26,7 +26,7 @@ export default function CurriculumPage() {
         if (!user) {
             navigate('/login');
         } else if (path === '/day1') {
-            const hasOnboarded = localStorage.getItem('onboarding_v2_complete');
+            const hasOnboarded = userData?.onboarding?.profession;
             if (hasOnboarded) {
                 navigate(path);
             } else {
@@ -35,7 +35,7 @@ export default function CurriculumPage() {
         } else if (path === '/day2') {
             if (!isDay1Complete) return; // Prevent navigation if locked
 
-            const hasFitSurvey = localStorage.getItem('org_fit_survey_done');
+            const hasFitSurvey = userData?.surveys?.org_fit_survey;
             if (hasFitSurvey) {
                 navigate(path);
             } else {
@@ -195,7 +195,8 @@ export default function CurriculumPage() {
                                     <ListItem>Prompt Engineering Frameworks</ListItem>
                                 </ul>
                                 <button
-                                    onClick={() => handleStartModule('/day1')}
+                                    onClick={() => !isDay1Complete && handleStartModule('/day1')}
+                                    disabled={isDay1Complete}
                                     style={{
                                         width: '100%',
                                         padding: '1rem',
@@ -206,7 +207,7 @@ export default function CurriculumPage() {
                                             : user ? 'linear-gradient(135deg, #FF5722 0%, #F44336 100%)' : 'var(--bg-secondary)',
                                         color: user ? '#fff' : 'var(--text-secondary)',
                                         fontWeight: 700,
-                                        cursor: 'pointer',
+                                        cursor: isDay1Complete ? 'not-allowed' : 'pointer',
                                         transition: 'all 0.3s',
                                         display: 'flex',
                                         justifyContent: 'center',
