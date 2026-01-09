@@ -230,213 +230,145 @@ export default function GsapHero() {
                         }
                     `}
                 </style>
-                {/* CTA Section */}
+                {/* CTA Section - Clean & Premium */}
                 <div ref={ctaRef} style={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '1rem',
-                    marginBottom: '3rem',
+                    gap: '2rem',
+                    marginBottom: '4rem',
                     position: 'relative',
                     zIndex: 2
                 }}>
-                    {/* Animated Background Glow */}
-                    <div style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: '600px',
-                        height: '600px',
-                        background: 'radial-gradient(circle, rgba(255, 170, 2, 0.15) 0%, transparent 70%)',
-                        filter: 'blur(60px)',
-                        animation: 'pulse 4s ease-in-out infinite',
-                        zIndex: -1
-                    }} />
-
                     <h1 style={{
-                        fontSize: 'clamp(2rem, 4vw, 3rem)',
+                        fontSize: 'clamp(1.5rem, 3vw, 2rem)',
                         color: '#FFAA02',
-                        fontWeight: 900,
-                        lineHeight: 1.1,
+                        fontWeight: 700,
+                        lineHeight: 1.2,
                         margin: 0,
-                        letterSpacing: '-0.5px',
-                        textShadow: '0 0 20px rgba(255, 170, 2, 0.3)',
-                        animation: 'float 3s ease-in-out infinite'
+                        letterSpacing: '-0.02em',
+                        opacity: 0.9
                     }}>
-                        Why LetsUpgrade ?
+                        Why LetsUpgrade?
                     </h1>
 
                     <h2
                         key={outcomeIndex}
                         style={{
-                            fontSize: 'clamp(3rem, 7vw, 6rem)',
+                            fontSize: 'clamp(3.5rem, 8vw, 7rem)',
                             color: 'var(--text-primary)',
-                            fontWeight: 800,
+                            fontWeight: 900,
                             margin: 0,
-                            animation: 'fadeIn 0.5s ease, textGlow 2s ease-in-out infinite',
+                            animation: 'fadeIn 0.5s ease',
                             opacity: 1,
-                            lineHeight: 1.1,
-                            whiteSpace: 'nowrap',
-                            minHeight: '1.5em',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            textShadow: '4px 4px 8px rgba(0, 0, 0, 0.1), 0 0 40px rgba(255, 170, 2, 0.2)',
-                            transform: 'perspective(1000px) rotateX(5deg)',
-                            transition: 'all 0.3s ease'
+                            lineHeight: 0.95,
+                            letterSpacing: '-0.04em',
+                            textAlign: 'center'
                         }}
                     >
                         GET {outcomes[outcomeIndex]}
                     </h2>
-                </div>
 
-                {/* Hero Text - GOD LEVEL */}
-                <div ref={textRef} style={{ overflow: 'visible', marginBottom: '1.5rem', position: 'relative' }}>
+                    {/* Premium Tagline Box */}
                     <div style={{
-                        textAlign: 'center',
-                        marginBottom: '2rem',
+                        maxWidth: '800px',
+                        margin: '2rem auto 0',
+                        padding: '2.5rem 3rem',
+                        background: 'linear-gradient(135deg, #FFFFFF 0%, #FFFEF8 100%)',
+                        borderRadius: '24px',
+                        border: '2px solid rgba(255, 170, 2, 0.15)',
+                        boxShadow: '0 20px 60px -15px rgba(255, 170, 2, 0.15), 0 0 0 1px rgba(255, 170, 2, 0.05)',
                         position: 'relative',
-                        padding: '2rem 1rem'
-                    }}>
-                        {/* Floating particles background */}
+                        overflow: 'hidden',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-4px)';
+                            e.currentTarget.style.boxShadow = '0 30px 80px -15px rgba(255, 170, 2, 0.25), 0 0 0 2px rgba(255, 170, 2, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 20px 60px -15px rgba(255, 170, 2, 0.15), 0 0 0 1px rgba(255, 170, 2, 0.05)';
+                        }}
+                    >
+                        {/* Subtle gradient overlay */}
                         <div style={{
                             position: 'absolute',
                             top: 0,
                             left: 0,
                             right: 0,
-                            bottom: 0,
-                            overflow: 'hidden',
-                            pointerEvents: 'none',
-                            zIndex: 0
+                            height: '100%',
+                            background: 'linear-gradient(135deg, rgba(255, 170, 2, 0.03) 0%, transparent 50%)',
+                            pointerEvents: 'none'
+                        }} />
+
+                        <p style={{
+                            fontSize: 'clamp(1.25rem, 2.5vw, 1.75rem)',
+                            fontWeight: 600,
+                            color: '#1a1a1a',
+                            letterSpacing: '-0.02em',
+                            lineHeight: 1.5,
+                            margin: 0,
+                            textAlign: 'center',
+                            position: 'relative',
+                            zIndex: 1
                         }}>
-                            {[...Array(6)].map((_, i) => (
-                                <div
-                                    key={i}
+                            Future-proof your career—
+                            <br />
+                            <span style={{
+                                color: '#FFAA02',
+                                fontWeight: 700,
+                                position: 'relative',
+                                display: 'inline-block'
+                            }}>
+                                without quitting your job.
+                                <svg
                                     style={{
                                         position: 'absolute',
-                                        width: `${Math.random() * 6 + 2}px`,
-                                        height: `${Math.random() * 6 + 2}px`,
-                                        background: '#FFAA02',
-                                        borderRadius: '50%',
-                                        left: `${Math.random() * 100}%`,
-                                        top: `${Math.random() * 100}%`,
-                                        animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-                                        animationDelay: `${Math.random() * 2}s`,
-                                        opacity: 0.4,
-                                        boxShadow: '0 0 10px rgba(255, 170, 2, 0.5)'
+                                        bottom: '-8px',
+                                        left: '0',
+                                        width: '100%',
+                                        height: '8px',
+                                        opacity: 0.6
                                     }}
-                                />
-                            ))}
-                        </div>
+                                    viewBox="0 0 200 8"
+                                    preserveAspectRatio="none"
+                                >
+                                    <path
+                                        d="M0,4 Q50,0 100,4 T200,4"
+                                        fill="none"
+                                        stroke="#FFAA02"
+                                        strokeWidth="3"
+                                        strokeLinecap="round"
+                                    />
+                                </svg>
+                            </span>
+                        </p>
 
-                        {/* Main tagline with 3D effect */}
+                        {/* Corner accents */}
                         <div style={{
-                            position: 'relative',
-                            display: 'inline-block',
-                            padding: '1.5rem 2.5rem',
-                            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%)',
-                            borderRadius: '20px',
-                            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 170, 2, 0.1)',
-                            transform: 'perspective(1000px) rotateX(2deg)',
-                            transition: 'all 0.3s ease',
-                            border: '2px solid transparent',
-                            backgroundClip: 'padding-box',
-                            zIndex: 1
-                        }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) translateY(-5px)';
-                                e.currentTarget.style.boxShadow = '0 30px 80px rgba(255, 170, 2, 0.2), 0 0 0 2px rgba(255, 170, 2, 0.3)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'perspective(1000px) rotateX(2deg)';
-                                e.currentTarget.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 170, 2, 0.1)';
-                            }}
-                        >
-                            <p style={{
-                                fontSize: 'clamp(1.2rem, 2.8vw, 1.8rem)',
-                                fontWeight: 700,
-                                background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
-                                WebkitBackgroundClip: 'text',
-                                WebkitTextFillColor: 'transparent',
-                                backgroundClip: 'text',
-                                letterSpacing: '-0.03em',
-                                lineHeight: 1.5,
-                                margin: 0,
-                                position: 'relative',
-                                textShadow: 'none'
-                            }}>
-                                Future-proof your career—
-                                <br />
-                                <span style={{
-                                    background: 'linear-gradient(135deg, #FFAA02 0%, #FF8C00 50%, #FFAA02 100%)',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    backgroundClip: 'text',
-                                    fontWeight: 900,
-                                    fontSize: '1.1em',
-                                    display: 'inline-block',
-                                    animation: 'shimmerText 3s ease-in-out infinite',
-                                    backgroundSize: '200% auto'
-                                }}>without quitting your job.</span>
-                            </p>
-
-                            {/* Glowing corner accents */}
-                            <div style={{
-                                position: 'absolute',
-                                top: '-2px',
-                                left: '-2px',
-                                width: '30px',
-                                height: '30px',
-                                border: '3px solid #FFAA02',
-                                borderRight: 'none',
-                                borderBottom: 'none',
-                                borderRadius: '20px 0 0 0',
-                                opacity: 0.6,
-                                animation: 'glow 2s ease-in-out infinite'
-                            }} />
-                            <div style={{
-                                position: 'absolute',
-                                bottom: '-2px',
-                                right: '-2px',
-                                width: '30px',
-                                height: '30px',
-                                border: '3px solid #FFAA02',
-                                borderLeft: 'none',
-                                borderTop: 'none',
-                                borderRadius: '0 0 20px 0',
-                                opacity: 0.6,
-                                animation: 'glow 2s ease-in-out infinite',
-                                animationDelay: '1s'
-                            }} />
-                        </div>
-
-                        {/* Animated underline with particles */}
+                            position: 'absolute',
+                            top: '12px',
+                            left: '12px',
+                            width: '24px',
+                            height: '24px',
+                            borderTop: '3px solid #FFAA02',
+                            borderLeft: '3px solid #FFAA02',
+                            borderRadius: '8px 0 0 0',
+                            opacity: 0.4
+                        }} />
                         <div style={{
-                            width: '120px',
-                            height: '4px',
-                            background: 'linear-gradient(90deg, transparent, #FFAA02, transparent)',
-                            margin: '2rem auto 0',
-                            borderRadius: '2px',
-                            position: 'relative',
-                            animation: 'expandContract 3s ease-in-out infinite',
-                            boxShadow: '0 0 20px rgba(255, 170, 2, 0.5)'
-                        }}>
-                            <div style={{
-                                position: 'absolute',
-                                width: '8px',
-                                height: '8px',
-                                background: '#FFAA02',
-                                borderRadius: '50%',
-                                top: '-2px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                animation: 'bounce 1.5s ease-in-out infinite',
-                                boxShadow: '0 0 15px rgba(255, 170, 2, 0.8)'
-                            }} />
-                        </div>
+                            position: 'absolute',
+                            bottom: '12px',
+                            right: '12px',
+                            width: '24px',
+                            height: '24px',
+                            borderBottom: '3px solid #FFAA02',
+                            borderRight: '3px solid #FFAA02',
+                            borderRadius: '0 0 8px 0',
+                            opacity: 0.4
+                        }} />
                     </div>
-
                 </div>
 
 
