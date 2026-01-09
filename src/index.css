@@ -250,3 +250,33 @@ a {
 .auto-scroll-container:hover {
   animation-play-state: paused;
 }
+
+/* Subtle Pulse Animation for Tagline */
+@keyframes subtlePulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.95;
+    transform: scale(1.01);
+  }
+}
+
+/* Shimmer Animation for Underline */
+@keyframes shimmer {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scaleX(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1.2);
+  }
+}

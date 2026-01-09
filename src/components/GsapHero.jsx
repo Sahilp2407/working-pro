@@ -238,7 +238,45 @@ export default function GsapHero() {
 
                 {/* Hero Text */}
                 <div ref={textRef} style={{ overflow: 'hidden', marginBottom: '1.5rem' }}>
+                    <div style={{
+                        textAlign: 'center',
+                        marginBottom: '2rem',
+                        position: 'relative'
+                    }}>
+                        <p style={{
+                            fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)',
+                            fontWeight: 600,
+                            background: 'linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 50%, #1a1a1a 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                            letterSpacing: '-0.02em',
+                            lineHeight: 1.4,
+                            margin: 0,
+                            padding: '0.5rem 1rem',
+                            position: 'relative',
+                            display: 'inline-block',
+                            animation: 'subtlePulse 3s ease-in-out infinite'
+                        }}>
+                            Future-proof your career—<span style={{
+                                background: 'linear-gradient(135deg, #FFAA02 0%, #FF8C00 100%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text',
+                                fontWeight: 700
+                            }}>without quitting your job.</span>
+                        </p>
 
+                        {/* Decorative underline */}
+                        <div style={{
+                            width: '60px',
+                            height: '3px',
+                            background: 'linear-gradient(90deg, transparent, #FFAA02, transparent)',
+                            margin: '1rem auto 0',
+                            borderRadius: '2px',
+                            animation: 'shimmer 2s ease-in-out infinite'
+                        }} />
+                    </div>
 
                 </div>
 
