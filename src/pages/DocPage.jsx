@@ -688,39 +688,7 @@ export default function DocPage({ day }) {
                                     </motion.div>
                                 </div>
 
-                                {/* Lock Overlay - Crispy and Unblurred */}
-                                {locked && (
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: 0, left: '-2rem', right: '-2rem', bottom: 0,
-                                        zIndex: 20,
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: '1.5rem',
-                                        pointerEvents: 'none'
-                                    }}>
-                                        <div style={{
-                                            padding: '2rem',
-                                            borderRadius: '50%',
-                                            boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                                            border: '2px solid var(--accent-color)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            marginBottom: '1rem',
-                                            transform: 'scale(1.1)',
-                                            background: 'var(--bg-primary)'
-                                        }}>
-                                            <Lock size={48} color="var(--accent-color)" />
-                                        </div>
-                                        <div style={{ textAlign: 'center' }}>
-                                            <p style={{ fontWeight: 800, fontSize: '1.5rem', marginBottom: '0.5rem', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>Module Locked</p>
-                                            <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', opacity: 0.9 }}>Complete the previous module quiz to unlock</p>
-                                        </div>
-                                    </div>
-                                )}
+
                             </section>
                         );
                     })}
