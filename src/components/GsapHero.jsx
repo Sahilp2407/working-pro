@@ -165,7 +165,7 @@ export default function GsapHero() {
             justifyContent: 'center',
             background: 'var(--bg-primary)',
             paddingTop: 'clamp(7rem, 12vh, 9rem)',
-            paddingBottom: 'clamp(2rem, 4vh, 3rem)'
+            paddingBottom: 'clamp(8rem, 15vh, 10rem)'
         }}>
             {/* Canvas Background */}
             <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, zIndex: 0 }} />
