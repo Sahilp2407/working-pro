@@ -1,5 +1,8 @@
 import React from 'react';
 import { Briefcase } from 'lucide-react';
+import { db } from '../config/firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
 
 export default function WorkplaceUsageCard({ day = 'day1', style = {} }) {
     const isDay1 = day === 'day1';
@@ -20,6 +23,25 @@ export default function WorkplaceUsageCard({ day = 'day1', style = {} }) {
         flexDirection: 'column',
         ...style
     };
+
+    const [sessionData, setSessionData] = useState(null);
+
+    useEffect(() => {
+        const docRef = doc(db, 'config', 'liveSession');
+        const unsubscribe = onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                setSessionData(docSnap.data());
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
+    // Fallback data
+    const dayConfig = isDay1 ? (sessionData?.day1) : (sessionData?.day2);
+    const mentor = sessionData?.mentor || { name: 'Sahil Pandey', title: 'AI & ML Specialist' };
+    const title = dayConfig?.title || (isDay1 ? 'Fundamentals' : 'Advanced Applications');
+    const time = dayConfig?.time || (isDay1 ? 'Monday, 6:00 PM - 8:00 PM IST' : 'Tuesday, 6:00 PM - 8:00 PM IST');
+    const link = dayConfig?.link || 'https://meet.google.com/your-meeting-link';
 
     return (
         <div style={responsiveCardStyle}>
@@ -64,13 +86,13 @@ export default function WorkplaceUsageCard({ day = 'day1', style = {} }) {
                     color: 'var(--text-primary)',
                     marginBottom: '0.25rem'
                 }}>
-                    Day {isDay1 ? '1' : '2'} - {isDay1 ? 'Fundamentals' : 'Advanced Applications'}
+                    Day {isDay1 ? '1' : '2'} - {title}
                 </div>
                 <div style={{
                     fontSize: '0.9rem',
                     color: 'var(--text-secondary)'
                 }}>
-                    {isDay1 ? 'Monday' : 'Tuesday'}, 6:00 PM - 8:00 PM IST
+                    {time}
                 </div>
             </div>
 
@@ -98,13 +120,13 @@ export default function WorkplaceUsageCard({ day = 'day1', style = {} }) {
                     color: 'var(--text-primary)',
                     marginBottom: '0.25rem'
                 }}>
-                    Sahil Pandey
+                    {mentor.name}
                 </div>
                 <div style={{
                     fontSize: '0.85rem',
                     color: 'var(--text-secondary)'
                 }}>
-                    AI & ML Specialist
+                    {mentor.title}
                 </div>
             </div>
 
@@ -127,7 +149,7 @@ export default function WorkplaceUsageCard({ day = 'day1', style = {} }) {
                     🔗 Join Class
                 </div>
                 <a
-                    href="https://meet.google.com/your-meeting-link"
+                    href={link}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
@@ -152,13 +174,13 @@ export default function WorkplaceUsageCard({ day = 'day1', style = {} }) {
                         e.currentTarget.style.borderColor = 'rgba(255, 87, 34, 0.3)';
                     }}
                 >
-                    meet.google.com/your-meeting-link
+                    {link.replace('https://', '')}
                 </a>
             </div>
 
             {/* Join Button */}
             <a
-                href="https://meet.google.com/your-meeting-link"
+                href={link}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{

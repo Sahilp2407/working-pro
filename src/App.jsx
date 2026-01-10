@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import DocPage from './pages/DocPage';
 import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
+import SessionAdminPage from './pages/SessionAdminPage';
 
 const PublicOnlyRoute = ({ children }) => {
   const { user } = useAuth();
@@ -61,6 +62,7 @@ function App() {
                 </AdminRoute>
               </ProtectedRoute>
             } />
+            <Route path="/live-admin" element={<SessionAdminPage />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
