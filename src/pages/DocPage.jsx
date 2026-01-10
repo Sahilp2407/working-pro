@@ -180,8 +180,23 @@ const QuizComponent = ({ sectionId, onComplete }) => {
 
 export default function DocPage({ day }) {
     const navigate = useNavigate();
-    const { user, userData, setUserData } = useAuth();
+    const { user, userData, setUserData, loading } = useAuth();
     const { theme } = useTheme();
+
+    if (loading) {
+        return (
+            <div style={{
+                height: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'var(--bg-primary)',
+                color: 'var(--accent-color)'
+            }}>
+                <div className="animate-spin" style={{ width: '40px', height: '40px', border: '4px solid', borderRadius: '50%', borderTopColor: 'transparent' }} />
+            </div>
+        );
+    }
     const content = day === 'day1' ? day1Content : day2Content;
 
     // Initial State
@@ -190,15 +205,16 @@ export default function DocPage({ day }) {
 
     // Sync activeId with progress on load
     useEffect(() => {
-        if (!initialized && content.length > 0) {
+        // Wait for userData to be available before making a decision
+        if (!initialized && userData && content.length > 0) {
             const sections = userData?.progress?.completedSections || [];
+
             // Find first section that is NOT completed
             const nextSection = content.find(s => !sections.includes(s.id));
             if (nextSection) {
                 setActiveId(nextSection.id);
             } else {
                 // If all done, default to first or last? 
-                // Default to first as a safe fallback if null, or last if they already finished
                 setActiveId(content[0]?.id);
             }
             setInitialized(true);
@@ -296,12 +312,10 @@ export default function DocPage({ day }) {
                         'stats.totalIncorrect': increment(incorrect)
                     }).catch(async (err) => {
                         console.error("Atomic update failed, trying fallback:", err);
-                        // Fallback: Create doc if it doesn't exist (rare case)
+                        // Fallback: Try a full setDoc with merge - sometimes safer if doc structure is weird
                         try {
-                            const snap = await getDoc(userRef);
-                            if (!snap.exists()) {
-                                await setDoc(userRef, updatedUserData);
-                            }
+                            await setDoc(userRef, updatedUserData, { merge: true });
+                            console.log("Fallback save successful");
                         } catch (e) {
                             console.error("Critical Save Error:", e);
                         }
