@@ -205,19 +205,21 @@ export default function DocPage({ day }) {
 
     // Sync activeId with progress on load
     useEffect(() => {
-        // Wait for userData to be available before making a decision
-        if (!initialized && userData && content.length > 0) {
+        if (userData && content.length > 0) {
             const sections = userData?.progress?.completedSections || [];
 
             // Find first section that is NOT completed
-            const nextSection = content.find(s => !sections.includes(s.id));
-            if (nextSection) {
-                setActiveId(nextSection.id);
-            } else {
-                // If all done, default to first or last? 
-                setActiveId(content[0]?.id);
+            const incomplete = content.find(s => !sections.includes(s.id));
+
+            if (!initialized) {
+                // Initial load: Set active section to the first incomplete one
+                if (incomplete) {
+                    setActiveId(incomplete.id);
+                } else {
+                    setActiveId(content[content.length - 1]?.id);
+                }
+                setInitialized(true);
             }
-            setInitialized(true);
         }
     }, [userData, content, initialized]);
 
@@ -236,7 +238,9 @@ export default function DocPage({ day }) {
     const [showFinalFeedbackModal, setShowFinalFeedbackModal] = useState(false);
 
     // Safe Usage of userData
-    const completedSections = userData?.progress?.completedSections || [];
+    const completedSections = useMemo(() => {
+        return userData?.progress?.completedSections || [];
+    }, [userData]);
 
     const day1Finished = day1Content.every(s => completedSections.includes(s.id));
     const day2Finished = day2Content.every(s => completedSections.includes(s.id));
@@ -250,19 +254,17 @@ export default function DocPage({ day }) {
     // Scroll to active section on load
     useEffect(() => {
         if (initialized && activeId) {
-            // Delay slightly to ensure DOM is fully rendered
             const timer = setTimeout(() => {
                 const el = document.getElementById(activeId);
                 if (el) {
                     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
-            }, 500);
+            }, 600); // Slightly longer delay to ensure DOM update
             return () => clearTimeout(timer);
         }
-    }, [initialized, activeId]); // Only triggers when initialization completes
+    }, [initialized, activeId]);
 
-
-    const handleSectionComplete = (sectionId, correct, incorrect) => {
+    const handleSectionComplete = async (sectionId, correct, incorrect) => {
         const total = correct + incorrect;
         if (correct < 3) {
             setFailScore({ correct, total });
@@ -270,58 +272,25 @@ export default function DocPage({ day }) {
             return;
         }
 
+        if (!user) return;
+
         try {
-            // Safe access to userData with defaults
-            const safeUserData = userData || {
-                progress: { completedSections: [] },
-                stats: { totalPoints: 0, totalCorrect: 0, totalIncorrect: 0 }
-            };
+            const userRef = doc(db, 'users', user.uid);
+            const pointsDelta = (correct * 10) - (incorrect * 5);
 
-            const currentCompletedSections = safeUserData.progress?.completedSections || [];
-            const isAlreadyCompleted = currentCompletedSections.includes(sectionId);
-
-            const pointsDelta = correct - incorrect;
-
-            let updatedUserData = safeUserData;
-
-            if (!isAlreadyCompleted) {
-                updatedUserData = {
-                    ...safeUserData,
-                    progress: {
-                        ...(safeUserData.progress || {}),
-                        completedSections: [...currentCompletedSections, sectionId]
-                    },
-                    stats: {
-                        ...(safeUserData.stats || {}),
-                        totalPoints: (safeUserData.stats?.totalPoints || 0) + pointsDelta,
-                        totalCorrect: (safeUserData.stats?.totalCorrect || 0) + correct,
-                        totalIncorrect: (safeUserData.stats?.totalIncorrect || 0) + incorrect
-                    }
-                };
-
-                setUserData(updatedUserData); // Update Context locally
-
-                // Persist to Firestore with Atomic Updates
-                if (user) {
-                    const userRef = doc(db, 'users', user.uid);
-                    // Use atomic updates to prevent overwriting with stale data
-                    updateDoc(userRef, {
-                        'progress.completedSections': arrayUnion(sectionId),
-                        'stats.totalPoints': increment(pointsDelta),
-                        'stats.totalCorrect': increment(correct),
-                        'stats.totalIncorrect': increment(incorrect)
-                    }).catch(async (err) => {
-                        console.error("Atomic update failed, trying fallback:", err);
-                        // Fallback: Try a full setDoc with merge - sometimes safer if doc structure is weird
-                        try {
-                            await setDoc(userRef, updatedUserData, { merge: true });
-                            console.log("Fallback save successful");
-                        } catch (e) {
-                            console.error("Critical Save Error:", e);
-                        }
-                    });
+            // Use setDoc with merge for maximum reliability (ensures object paths exist)
+            await setDoc(userRef, {
+                progress: {
+                    completedSections: arrayUnion(sectionId)
+                },
+                stats: {
+                    totalPoints: increment(pointsDelta),
+                    totalCorrect: increment(correct),
+                    totalIncorrect: increment(incorrect)
                 }
-            }
+            }, { merge: true });
+
+            console.log("Progress saved successfully for:", sectionId);
 
             // Visual Feedback
             confetti({

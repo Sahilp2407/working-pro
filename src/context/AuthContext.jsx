@@ -20,23 +20,25 @@ export const AuthProvider = ({ children }) => {
 
         let unsubscribeSnapshot = null;
 
-        const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
+        const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
 
-            // Clean up previous snapshot listener
-            if (unsubscribeSnapshot) unsubscribeSnapshot();
+            if (unsubscribeSnapshot) {
+                unsubscribeSnapshot();
+                unsubscribeSnapshot = null;
+            }
 
             if (currentUser) {
                 const userRef = doc(db, 'users', currentUser.uid);
 
-                // Start Listening for REAL-TIME updates
-                unsubscribeSnapshot = onSnapshot(userRef, async (snap) => {
+                // Real-time listener
+                unsubscribeSnapshot = onSnapshot(userRef, (snap) => {
                     if (snap.exists()) {
                         setUserData(snap.data());
                         setLoading(false);
                         clearTimeout(safetyTimer);
                     } else {
-                        // Create new user doc if it doesn't exist
+                        // Initialize new user
                         const localName = localStorage.getItem('user_name');
                         const localPhone = localStorage.getItem('user_phone');
                         const newUser = {
@@ -45,17 +47,14 @@ export const AuthProvider = ({ children }) => {
                             name: localName || currentUser.displayName || currentUser.email.split('@')[0],
                             phone: localPhone || '',
                             photoURL: currentUser.photoURL,
-                            createdAt: serverTimestamp(),
+                            createdAt: new Date().toISOString(),
                             progress: { completedSections: [] },
                             stats: { totalPoints: 0, totalCorrect: 0, totalIncorrect: 0 },
-                            role: 'user'
+                            role: 'user',
+                            surveys: {},
+                            onboarding: {}
                         };
-                        try {
-                            await setDoc(userRef, newUser);
-                            // snap listener will trigger again with new data
-                        } catch (err) {
-                            console.error("Error creating user:", err);
-                        }
+                        setDoc(userRef, newUser).catch(err => console.error("Error creating user:", err));
                     }
                 }, (error) => {
                     console.error("Snapshot error:", error);
