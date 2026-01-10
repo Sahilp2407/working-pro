@@ -155,7 +155,7 @@ export default function Day1FeedbackModal({ isOpen, onClose, onComplete }) {
                                                     <Star
                                                         size={42}
                                                         fill={rating >= star ? "#FFB300" : "transparent"}
-                                                        color={rating >= star ? "#FFB300" : "rgba(255,255,255,0.2)"}
+                                                        color={rating >= star ? "#FFB300" : (isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.2)")}
                                                         strokeWidth={1.5}
                                                         style={{ filter: rating >= star ? 'drop-shadow(0 0 8px rgba(255, 179, 0, 0.4))' : 'none' }}
                                                     />
@@ -171,7 +171,7 @@ export default function Day1FeedbackModal({ isOpen, onClose, onComplete }) {
 
                                 {step === 2 && (
                                     <>
-                                        <h3 style={{ fontSize: '1.3rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)', marginBottom: '1.5rem', lineHeight: 1.4 }}>
+                                        <h3 style={{ fontSize: '1.3rem', fontWeight: 600, color: isDark ? 'rgba(255,255,255,0.9)' : '#1a1a1a', marginBottom: '1.5rem', lineHeight: 1.4 }}>
                                             What was the most <span style={{ color: '#FF5722' }}>valuable</span> part for you?
                                         </h3>
                                         <textarea
@@ -188,14 +188,14 @@ export default function Day1FeedbackModal({ isOpen, onClose, onComplete }) {
                                                 boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'
                                             }}
                                             onFocus={(e) => { e.target.style.borderColor = '#FF5722'; e.target.style.background = 'rgba(255, 87, 34, 0.05)'; }}
-                                            onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.background = 'rgba(255,255,255,0.03)'; }}
+                                            onBlur={(e) => { e.target.style.borderColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'; e.target.style.background = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.05)'; }}
                                         />
                                     </>
                                 )}
 
                                 {step === 3 && (
                                     <>
-                                        <h3 style={{ fontSize: '1.3rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)', marginBottom: '1.5rem', lineHeight: 1.4 }}>
+                                        <h3 style={{ fontSize: '1.3rem', fontWeight: 600, color: isDark ? 'rgba(255,255,255,0.9)' : '#1a1a1a', marginBottom: '1.5rem', lineHeight: 1.4 }}>
                                             What could be <span style={{ color: '#FF5722' }}>improved</span>?
                                         </h3>
                                         <textarea
@@ -205,21 +205,21 @@ export default function Day1FeedbackModal({ isOpen, onClose, onComplete }) {
                                             autoFocus
                                             rows={5}
                                             style={{
-                                                width: '100%', padding: '1.2rem', background: 'rgba(255,255,255,0.03)',
-                                                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px',
-                                                color: 'white', fontSize: '1rem', outline: 'none', resize: 'none',
+                                                width: '100%', padding: '1.2rem', background: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.05)',
+                                                border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.1)', borderRadius: '16px',
+                                                color: isDark ? 'white' : '#1a1a1a', fontSize: '1rem', outline: 'none', resize: 'none',
                                                 fontFamily: 'inherit', transition: 'all 0.2s',
                                                 boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.2)'
                                             }}
                                             onFocus={(e) => { e.target.style.borderColor = '#FF5722'; e.target.style.background = 'rgba(255, 87, 34, 0.05)'; }}
-                                            onBlur={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; e.target.style.background = 'rgba(255,255,255,0.03)'; }}
+                                            onBlur={(e) => { e.target.style.borderColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'; e.target.style.background = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.05)'; }}
                                         />
                                     </>
                                 )}
 
                                 {step === 4 && (
                                     <div>
-                                        <h3 style={{ fontSize: '1.3rem', fontWeight: 600, color: 'rgba(255,255,255,0.9)', marginBottom: '1.5rem', lineHeight: 1.4 }}>
+                                        <h3 style={{ fontSize: '1.3rem', fontWeight: 600, color: isDark ? 'rgba(255,255,255,0.9)' : '#1a1a1a', marginBottom: '1.5rem', lineHeight: 1.4 }}>
                                             Interested in a <span style={{ color: '#FF5722' }}>paid advanced program</span> (3 mo+)?
                                         </h3>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
