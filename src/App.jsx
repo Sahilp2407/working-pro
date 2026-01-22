@@ -40,17 +40,13 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            {/* Public Landing Page */}
-            <Route path="/" element={<LandingPage />} />
+            {/* Public Landing Page replaced with Curriculum Page as requested */}
+            <Route path="/" element={<CurriculumPage />} />
             <Route path="/curriculum" element={<CurriculumPage />} />
             <Route path="/get-started" element={<SelectionPage />} />
 
-            {/* Login Page (Redirects to /dashboard if already logged in) */}
-            <Route path="/login" element={
-              <PublicOnlyRoute>
-                <Login />
-              </PublicOnlyRoute>
-            } />
+            {/* Login Page */}
+            <Route path="/login" element={<Login />} />
 
             {/* Dashboard redirects to Curriculum */}
             <Route path="/dashboard" element={<Navigate to="/curriculum" replace />} />
@@ -63,35 +59,15 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/live-admin" element={<SessionAdminPage />} />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            } />
-            <Route path="/day1" element={
-              <ProtectedRoute>
-                <DocPage day="day1" />
-              </ProtectedRoute>
-            } />
-            <Route path="/day2" element={
-              <ProtectedRoute>
-                <DocPage day="day2" />
-              </ProtectedRoute>
-            } />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/day1" element={<DocPage day="day1" />} />
+            <Route path="/day2" element={<DocPage day="day2" />} />
             <Route path="/scorecard-test" element={<ScorecardTest />} />
 
             {/* Certificate Route */}
-            <Route path="/certificate" element={
-              <ProtectedRoute>
-                <CertificatePage />
-              </ProtectedRoute>
-            } />
+            <Route path="/certificate" element={<CertificatePage />} />
 
-            <Route path="/hardcopy" element={
-              <ProtectedRoute>
-                <HardcopyPage />
-              </ProtectedRoute>
-            } />
+            <Route path="/hardcopy" element={<HardcopyPage />} />
 
           </Routes>
         </Router>

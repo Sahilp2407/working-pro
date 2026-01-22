@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import ThemeToggle from '../components/ThemeToggle';
-import WorkplaceUsageCard from '../components/WorkplaceUsageCard';
+
 import { day1Content, day2Content } from '../data/content.jsx';
 import { quizzes } from '../data/quizzes';
 import { ArrowLeft, CheckCircle2, Lock, ArrowRight, Star, User } from 'lucide-react';
@@ -246,9 +246,10 @@ export default function DocPage({ day }) {
     const day2Finished = day2Content.every(s => completedSections.includes(s.id));
 
     const isLocked = (index) => {
-        if (index === 0) return false;
-        const prevSectionId = content[index - 1].id;
-        return !completedSections.includes(prevSectionId);
+        return false; // Unlock all sections for guest access
+        // if (index === 0) return false;
+        // const prevSectionId = content[index - 1].id;
+        // return !completedSections.includes(prevSectionId);
     };
 
     // Scroll to active section on load
@@ -792,13 +793,7 @@ export default function DocPage({ day }) {
                     </footer>
                 </main>
 
-                <WorkplaceUsageCard
-                    day={day}
-                    style={{
-                        order: window.innerWidth < 1024 ? -1 : 0,
-                        marginBottom: window.innerWidth < 1024 ? '2rem' : '0'
-                    }}
-                />
+
 
                 {/* Outcome Survey Modal */}
                 <OutcomeSurveyModal

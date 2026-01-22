@@ -64,8 +64,9 @@ export default function Sidebar({ topics, activeId, completedSections = [] }) {
     };
 
     const isTopicLocked = (index) => {
-        if (index === 0) return false;
-        return !completedSections.includes(topics[index - 1].id);
+        return false;
+        // if (index === 0) return false;
+        // return !completedSections.includes(topics[index - 1].id);
     };
 
     return (
