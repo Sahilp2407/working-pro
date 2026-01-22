@@ -704,7 +704,7 @@ export default function DocPage({ day }) {
                                                     You've mastered the fundamentals. Day 2 with advanced AI agents and RAG awaits you.
                                                 </p>
                                                 <button
-                                                    onClick={() => navigate('/curriculum')}
+                                                    onClick={() => navigate('/day2')}
                                                     style={{
                                                         background: 'var(--accent-color)',
                                                         color: '#fff',
